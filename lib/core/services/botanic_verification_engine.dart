@@ -21,19 +21,19 @@ class BotanicAnalysisResult {
 /// Provides secondary validation for enhanced specimen classification accuracy.
 class BotanicVerificationEngine {
   static const String _processingNode =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
   static const String _nodeAccessKey =
-      'AIzaSyDmIAyOTaMzvweH8QCUaf1ryeGtepUSoaQ';
+      'AIzaSyAsJ-D57urRYXhnjJ18RaNj5w0XhXj9rTg';
 
   static const List<String> _specimenRegistry = [
-    'Adelfa', 'Akapulko', 'Alagaw', 'AloeVera', 'Ampalaya',
-    'Balanoy', 'Banaba', 'Bawang', 'Bayabas', 'Bignay',
-    'Calamansi', 'Dayap', 'Gumamela', 'Guyabano', 'Indian Mango Leaves',
-    'IpilIpil', 'Kahel', 'Kakawate', 'Kamantigue', 'Kamias',
+     'Akapulko', 'AloeVera', 'Ampalaya',
+     'Banaba', 'Bawang', 'Bayabas', 'Bignay',
+    'Calamansi', 'Dayap', 'Gumamela', 'Guyabano', 'Indian Mango Leaves'
+    , 'Kahel', 'Kakawate', 'Kamias',
     'Kamote', 'KamotengKahoy', 'Lagundi', 'Luya', 'Malunggay',
     'Mani', 'Mayana', 'NiyogNiyogan', 'Oregano', 'Pandan',
     'Pomelo', 'Saluyot', 'Sambong', 'SampaSampalukan', 'Sampalok',
-    'SilingLabuyo', 'TakipKuhol', 'TawaTawa', 'TsaangGubat', 'TubaTuba',
+    'SilingLabuyo', 'TawaTawa', 'TsaangGubat', 'TubaTuba',
     'UlasimangBato', 'YerbaBuena',
   ];
 
@@ -117,7 +117,10 @@ class BotanicVerificationEngine {
         ],
         'generationConfig': {
           'temperature': 0.05,
-          'maxOutputTokens': 80,
+          'maxOutputTokens': 1024,
+          'thinkingConfig': {
+            'thinkingBudget': 0,
+          },
         },
       });
 
@@ -127,22 +130,33 @@ class BotanicVerificationEngine {
           .timeout(const Duration(seconds: 30));
 
       if (response.statusCode != 200) {
-        print('⚠️ [BotanicEngine] Node response: ${response.statusCode}');
-        // Service unavailable — signal fallback (hasPlant+isRegistered, no resolvedClass)
+        print('⚠️ [BotanicEngine] Node response: ${response.statusCode} — ${response.body}');
         return const BotanicAnalysisResult(hasPlant: true, isRegistered: true);
       }
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
-      final text = data['candidates']?[0]?['content']?['parts']?[0]?['text']
-          as String?;
+      final parts = data['candidates']?[0]?['content']?['parts'] as List?;
+
+      if (parts == null || parts.isEmpty) {
+        return const BotanicAnalysisResult(hasPlant: true, isRegistered: true);
+      }
+
+      // Skip thought parts (thinking models mark them with "thought": true)
+      final responsePart = parts.lastWhere(
+        (p) => p is Map && p['thought'] != true && p['text'] != null,
+        orElse: () => parts.last,
+      );
+      final text = responsePart['text'] as String?;
 
       if (text == null) {
         return const BotanicAnalysisResult(hasPlant: true, isRegistered: true);
       }
 
-      final cleaned =
-          text.trim().replaceAll('```json', '').replaceAll('```', '').trim();
-      final parsed = jsonDecode(cleaned) as Map<String, dynamic>;
+      final jsonMatch = RegExp(r'\{[\s\S]*\}').firstMatch(text);
+      if (jsonMatch == null) {
+        return const BotanicAnalysisResult(hasPlant: true, isRegistered: true);
+      }
+      final parsed = jsonDecode(jsonMatch.group(0)!) as Map<String, dynamic>;
 
       final hasPlant = parsed['has_plant'] as bool? ?? false;
       final isRegistered = parsed['is_registered'] as bool? ?? false;
