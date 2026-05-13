@@ -349,4 +349,5 @@ node_modules/
 # Excluded from repo (e.g. for RE-HerbaScan)
 CHANGELOG.md
 .cursor/
+.claude/
 *.hprof
