@@ -51,9 +51,9 @@ class PlantProvider extends ChangeNotifier {
     // This will also check for and add any missing plants
     try {
       await _databaseInitService.initializeDatabase();
-      print('✅ Database initialized successfully');
+      print(' Database initialized successfully');
     } catch (e) {
-      print('❌ Error initializing database: $e');
+      print(' Error initializing database: $e');
     }
 
     // When online, sync catalog from Supabase (admin-editable master)
@@ -63,10 +63,10 @@ class PlantProvider extends ChangeNotifier {
           c == ConnectivityResult.mobile || c == ConnectivityResult.wifi);
       if (online) {
         final synced = await CatalogSyncService().syncFromSupabase();
-        if (synced) print('✅ Catalog synced from Supabase');
+        if (synced) print(' Catalog synced from Supabase');
       }
     } catch (e) {
-      print('ℹ️ Catalog sync skipped or failed: $e');
+      print('ℹ Catalog sync skipped or failed: $e');
     }
 
     await loadPlants();
@@ -248,17 +248,17 @@ class PlantProvider extends ChangeNotifier {
   // Refresh plants and check for database updates
   Future<void> refreshPlants() async {
     try {
-      print('🔄 Refreshing plants...');
+      print(' Refreshing plants...');
       // Check for and add any missing plants
       await _databaseInitService.updateDatabaseWithMissingPlants();
-      print('✅ Database update check completed');
+      print(' Database update check completed');
       // Reload plants from database
       await loadPlants();
       await loadDOHApprovedPlants();
       print(
-          '✅ Plants reloaded: ${_plants.length} total, ${_dohApprovedPlants.length} DOH');
+          ' Plants reloaded: ${_plants.length} total, ${_dohApprovedPlants.length} DOH');
     } catch (e) {
-      print('❌ Error refreshing plants: $e');
+      print(' Error refreshing plants: $e');
       rethrow;
     }
   }
@@ -266,16 +266,16 @@ class PlantProvider extends ChangeNotifier {
   // Force reinitialize database (clears and repopulates)
   Future<void> forceReinitializeDatabase() async {
     try {
-      print('🔄 Force reinitializing database...');
+      print(' Force reinitializing database...');
       await _databaseInitService.repopulateDatabase();
-      print('✅ Database reinitialized');
+      print(' Database reinitialized');
       // Reload plants from database
       await loadPlants();
       await loadDOHApprovedPlants();
       print(
-          '✅ Plants reloaded: ${_plants.length} total, ${_dohApprovedPlants.length} DOH');
+          ' Plants reloaded: ${_plants.length} total, ${_dohApprovedPlants.length} DOH');
     } catch (e) {
-      print('❌ Error force reinitializing database: $e');
+      print(' Error force reinitializing database: $e');
       rethrow;
     }
   }
@@ -310,15 +310,15 @@ class PlantProvider extends ChangeNotifier {
   // Load scan history
   Future<void> loadScanHistory() async {
     try {
-      print('🔄 Loading scan history from database...');
+      print(' Loading scan history from database...');
       _scanHistory = await _databaseService.getScanHistory();
-      print('✅ Scan history loaded: ${_scanHistory.length} scans');
+      print(' Scan history loaded: ${_scanHistory.length} scans');
       if (_scanHistory.isNotEmpty) {
         print(
             '   First scan: ${_scanHistory.first.plant?.commonName ?? _scanHistory.first.topPrediction?.plantName ?? "Unknown"} (${_scanHistory.first.confidenceScore})');
       }
     } catch (e) {
-      print('❌ Error loading scan history: $e');
+      print(' Error loading scan history: $e');
       _scanHistory = [];
     }
     notifyListeners();
@@ -425,7 +425,7 @@ class PlantProvider extends ChangeNotifier {
   // Add scan result
   Future<void> addScanResult(ScanResult result) async {
     try {
-      print('💾 Saving scan result to database...');
+      print(' Saving scan result to database...');
       print('   ID: ${result.id}');
       print(
           '   Plant: ${result.plant?.commonName ?? result.topPrediction?.plantName ?? "Unknown"}');
@@ -438,9 +438,9 @@ class PlantProvider extends ChangeNotifier {
       notifyListeners();
 
       print(
-          '✅ Scan result saved successfully. Total scans: ${_scanHistory.length}');
+          ' Scan result saved successfully. Total scans: ${_scanHistory.length}');
     } catch (e) {
-      print('❌ Error saving scan result: $e');
+      print(' Error saving scan result: $e');
       rethrow;
     }
   }

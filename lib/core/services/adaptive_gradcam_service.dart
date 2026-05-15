@@ -29,20 +29,20 @@ class AdaptiveGradCAMService {
   /// Initialize the adaptive service
   Future<void> initialize() async {
     print('═══════════════════════════════════════════════════════');
-    print('🚀 [AdaptiveGradCAMService] initialize() called');
+    print(' [AdaptiveGradCAMService] initialize() called');
     print('   Current _isInitialized: $_isInitialized');
     print('   Offline service initialized: ${_offlineService.isInitialized}');
     print('═══════════════════════════════════════════════════════');
 
     if (_isInitialized) {
       _logger.i('AdaptiveGradCAMService already initialized');
-      print('✅ [AdaptiveGradCAMService] Already initialized, skipping');
+      print(' [AdaptiveGradCAMService] Already initialized, skipping');
       return;
     }
 
     try {
       _logger.i('Initializing AdaptiveGradCAMService...');
-      print('🚀 [AdaptiveGradCAMService] Starting initialization...');
+      print(' [AdaptiveGradCAMService] Starting initialization...');
 
       // Initialize offline service (always needed for fallback)
       // Don't fail if offline service fails - we can still use online mode
@@ -60,39 +60,39 @@ class AdaptiveGradCAMService {
 
         // Verify initialization actually succeeded
         if (_offlineService.isInitialized) {
-          _logger.i('✅ Offline CAM service initialized');
+          _logger.i(' Offline CAM service initialized');
           print(
-              '✅ [AdaptiveGradCAMService] Offline CAM service initialized successfully');
+              ' [AdaptiveGradCAMService] Offline CAM service initialized successfully');
         } else {
-          _logger.w('⚠️ Offline CAM service initialization failed silently');
-          _logger.w('⚠️ App will use online-only mode until fixed');
+          _logger.w(' Offline CAM service initialization failed silently');
+          _logger.w(' App will use online-only mode until fixed');
           print(
-              '⚠️ [AdaptiveGradCAMService] Offline CAM service initialization FAILED');
+              ' [AdaptiveGradCAMService] Offline CAM service initialization FAILED');
           print('   Status: $status');
-          print('   ⚠️ App will use online-only mode until fixed');
+          print('    App will use online-only mode until fixed');
         }
       } catch (e, stackTrace) {
-        _logger.w('⚠️ Offline CAM service failed to initialize: $e');
-        _logger.w('⚠️ App will use online-only mode until fixed');
+        _logger.w(' Offline CAM service failed to initialize: $e');
+        _logger.w(' App will use online-only mode until fixed');
         print('═══════════════════════════════════════════════════════');
         print(
-            '⚠️ [AdaptiveGradCAMService] EXCEPTION during offline CAM initialization');
+            ' [AdaptiveGradCAMService] EXCEPTION during offline CAM initialization');
         print('   Error: $e');
         print('   Error type: ${e.runtimeType}');
         print('   Stack trace: $stackTrace');
-        print('   ⚠️ App will use online-only mode until fixed');
+        print('    App will use online-only mode until fixed');
         print('═══════════════════════════════════════════════════════');
         // Continue initialization - online mode still works
       }
 
       _isInitialized = true;
-      _logger.i('✅ AdaptiveGradCAMService initialized successfully');
-      print('✅ [AdaptiveGradCAMService] Initialization complete');
+      _logger.i(' AdaptiveGradCAMService initialized successfully');
+      print(' [AdaptiveGradCAMService] Initialization complete');
       print('   _isInitialized: $_isInitialized');
     } catch (e, stackTrace) {
       _logger.e('Failed to initialize AdaptiveGradCAMService: $e');
       _isInitialized = false;
-      print('❌ [AdaptiveGradCAMService] Failed to initialize');
+      print(' [AdaptiveGradCAMService] Failed to initialize');
       print('   Error: $e');
       print('   Stack trace: $stackTrace');
       // Don't rethrow - allow app to start, will fail gracefully when needed
@@ -153,7 +153,7 @@ class AdaptiveGradCAMService {
   }) async {
     // CRITICAL: Use print() for visibility in logs
     print('═══════════════════════════════════════════════════════');
-    print('🌿 [AdaptiveGradCAM] identifyPlant() called');
+    print(' [AdaptiveGradCAM] identifyPlant() called');
     print('   Image path: ${imagePath != null ? "provided" : "null"}');
     print(
         '   Image bytes: ${imageBytes != null ? "${imageBytes.length} bytes" : "null"}');
@@ -163,9 +163,9 @@ class AdaptiveGradCAMService {
 
     if (!_isInitialized) {
       _logger.w('Service not initialized, initializing now...');
-      print('⚠️ [AdaptiveGradCAM] Service not initialized, initializing...');
+      print(' [AdaptiveGradCAM] Service not initialized, initializing...');
       await initialize();
-      print('✅ [AdaptiveGradCAM] Service initialization complete');
+      print(' [AdaptiveGradCAM] Service initialization complete');
       print('   Service initialized: $_isInitialized');
       print('   Offline service initialized: ${_offlineService.isInitialized}');
     }
@@ -196,10 +196,10 @@ class AdaptiveGradCAMService {
     // ── Stage 1: Image quality gate (blur + darkness) ──────────────────────
     // Run BEFORE connectivity check — no point uploading a bad image online,
     // and an OOD/offline failure should not happen because of image quality.
-    print('🔍 [AdaptiveGradCAM] Running Stage 1 image quality check...');
+    print(' [AdaptiveGradCAM] Running Stage 1 image quality check...');
     final qualityResult = await _imageQualityService.check(imageBytes);
     if (!qualityResult.passed) {
-      print('🚫 [AdaptiveGradCAM] Stage 1 FAILED: ${qualityResult.failureReason}');
+      print(' [AdaptiveGradCAM] Stage 1 FAILED: ${qualityResult.failureReason}');
       return {
         'validation_failed': true,
         'failure_reason': qualityResult.failureReason ??
@@ -207,18 +207,18 @@ class AdaptiveGradCAMService {
         'stage': 1,
       };
     }
-    print('✅ [AdaptiveGradCAM] Stage 1 PASSED');
+    print(' [AdaptiveGradCAM] Stage 1 PASSED');
 
     try {
       // Step 1: Check connectivity
-      print('📡 [AdaptiveGradCAM] Checking connectivity...');
+      print(' [AdaptiveGradCAM] Checking connectivity...');
       final hasConnection = await _hasConnectivity();
       print('   Connectivity result: $hasConnection');
 
       if (hasConnection) {
-        _logger.i('🌐 Online mode available, attempting Grad-CAM...');
+        _logger.i(' Online mode available, attempting Grad-CAM...');
         print(
-            '🌐 [AdaptiveGradCAM] Online mode available, attempting Grad-CAM...');
+            ' [AdaptiveGradCAM] Online mode available, attempting Grad-CAM...');
 
         // Try online first
         if (imagePath != null) {
@@ -229,7 +229,7 @@ class AdaptiveGradCAMService {
             // do NOT fall back to offline inference.
             if (onlineResult['validation_failed'] == true) {
               final reason = onlineResult['failure_reason'] as String? ?? '';
-              print('🚫 [AdaptiveGradCAM] Online validation failure: $reason');
+              print(' [AdaptiveGradCAM] Online validation failure: $reason');
               return {
                 'validation_failed': true,
                 'failure_reason': reason,
@@ -237,10 +237,10 @@ class AdaptiveGradCAMService {
               };
             }
 
-            _logger.i('✅ Online Grad-CAM succeeded');
+            _logger.i(' Online Grad-CAM succeeded');
 
             // Debug logging for gradcam_image
-            print('🔍 [AdaptiveGradCAM] Online result received:');
+            print(' [AdaptiveGradCAM] Online result received:');
             print('   Result keys: ${onlineResult.keys.toList()}');
             print(
                 '   gradcam_image present: ${onlineResult['gradcam_image'] != null}');
@@ -251,7 +251,7 @@ class AdaptiveGradCAMService {
                 print('   gradcam_image size: ${img.length} bytes');
               }
             } else {
-              print('   ⚠️ WARNING: gradcam_image is null in online result!');
+              print('    WARNING: gradcam_image is null in online result!');
             }
 
             return {
@@ -261,24 +261,24 @@ class AdaptiveGradCAMService {
           }
 
           _logger
-              .w('⚠️ Online Grad-CAM failed, falling back to offline CAM...');
+              .w(' Online Grad-CAM failed, falling back to offline CAM...');
         }
       } else {
-        _logger.i('📴 No connectivity, using offline CAM mode...');
+        _logger.i(' No connectivity, using offline CAM mode...');
         print(
-            '📴 [AdaptiveGradCAM] No connectivity, using offline CAM mode...');
+            ' [AdaptiveGradCAM] No connectivity, using offline CAM mode...');
       }
 
       // Step 2: Fallback to offline CAM
       // Try to initialize offline service if not already initialized
-      print('🔍 [AdaptiveGradCAM] Checking offline CAM service status...');
+      print(' [AdaptiveGradCAM] Checking offline CAM service status...');
       print('   Offline service initialized: ${_offlineService.isInitialized}');
 
       if (!_offlineService.isInitialized) {
         _logger.w(
-            '⚠️ Offline CAM service not initialized, attempting initialization...');
+            ' Offline CAM service not initialized, attempting initialization...');
         print(
-            '⚠️ [AdaptiveGradCAM] Offline CAM service not initialized, attempting initialization...');
+            ' [AdaptiveGradCAM] Offline CAM service not initialized, attempting initialization...');
         try {
           print('   ═══════════════════════════════════════════════════════');
           print('   Calling _offlineService.initialize()...');
@@ -309,15 +309,15 @@ class AdaptiveGradCAMService {
           // Verify initialization actually succeeded
           if (!_offlineService.isInitialized) {
             _logger.e(
-                '❌ Offline CAM service initialization failed - isInitialized is still false');
+                ' Offline CAM service initialization failed - isInitialized is still false');
             _logger
-                .e('❌ Cannot use offline CAM - service initialization failed');
-            print('❌ [AdaptiveGradCAM] Offline CAM initialization FAILED');
+                .e(' Cannot use offline CAM - service initialization failed');
+            print(' [AdaptiveGradCAM] Offline CAM initialization FAILED');
             print('   Status: $status');
             print(
-                '   ⚠️ This means initialize() completed but _isInitialized is still false');
+                '   This means initialize() completed but _isInitialized is still false');
             print(
-                '   ⚠️ Check the logs above for the specific error during initialization');
+                '    Check the logs above for the specific error during initialization');
             // Return error structure instead of null
             // CRITICAL FIX: Set method to 'cam' even on error so UI shows AI Explanation tab
             return {
@@ -334,14 +334,14 @@ class AdaptiveGradCAMService {
             };
           }
           _logger.i(
-              '✅ Offline CAM service initialized successfully during fallback');
+              ' Offline CAM service initialized successfully during fallback');
         } catch (e, stackTrace) {
-          _logger.e('❌ Failed to initialize offline CAM service: $e');
+          _logger.e(' Failed to initialize offline CAM service: $e');
           _logger.e('Stack trace: $stackTrace');
           // Verify initialization status
           if (!_offlineService.isInitialized) {
             _logger
-                .e('❌ Cannot use offline CAM - service initialization failed');
+                .e(' Cannot use offline CAM - service initialization failed');
             // Return error structure instead of null
             // CRITICAL FIX: Set method to 'cam' even on error so UI shows AI Explanation tab
             return {
@@ -361,8 +361,8 @@ class AdaptiveGradCAMService {
       }
 
       // Now try offline CAM
-      _logger.i('📴 Attempting offline CAM computation...');
-      print('📴 [AdaptiveGradCAM] Attempting offline CAM computation...');
+      _logger.i(' Attempting offline CAM computation...');
+      print(' [AdaptiveGradCAM] Attempting offline CAM computation...');
       print('   Image bytes: ${imageBytes.length} bytes');
       final offlineResult = await _tryOffline(imageBytes, modelName: modelName);
       print(
@@ -371,12 +371,12 @@ class AdaptiveGradCAMService {
       if (offlineResult != null) {
         // Stage 2 OOD rejection from offline inference — propagate as-is.
         if (offlineResult['validation_failed'] == true) {
-          print('🚫 [AdaptiveGradCAM] Offline OOD failure: ${offlineResult['failure_reason']}');
+          print(' [AdaptiveGradCAM] Offline OOD failure: ${offlineResult['failure_reason']}');
           return offlineResult;
         }
 
         // Enhanced logging for debugging
-        print('🔍 [AdaptiveGradCAM] Offline CAM result received:');
+        print(' [AdaptiveGradCAM] Offline CAM result received:');
         print('   Result keys: ${offlineResult.keys.toList()}');
         print(
             '   gradcam_image present: ${offlineResult['gradcam_image'] != null}');
@@ -387,14 +387,14 @@ class AdaptiveGradCAMService {
             print('   gradcam_image size: ${img.length} bytes');
           } else {
             print(
-                '   ⚠️ WARNING: gradcam_image is not Uint8List! Type: ${img.runtimeType}');
+                '    WARNING: gradcam_image is not Uint8List! Type: ${img.runtimeType}');
           }
         } else {
-          print('   ⚠️ WARNING: gradcam_image is null in offline CAM result!');
+          print('    WARNING: gradcam_image is null in offline CAM result!');
         }
 
         final hasHeatmap = offlineResult['gradcam_image'] != null;
-        _logger.i('✅ Offline CAM succeeded');
+        _logger.i(' Offline CAM succeeded');
         _logger.i('   Method: ${offlineResult['method']}');
         _logger.i('   Plant name: ${offlineResult['plant_name']}');
         _logger.i('   Confidence: ${offlineResult['confidence']}');
@@ -404,18 +404,18 @@ class AdaptiveGradCAMService {
           _logger.i('   Heatmap size: ${heatmapBytes?.length ?? 0} bytes');
         } else {
           _logger.w(
-              '   ⚠️ WARNING: Offline CAM succeeded but gradcam_image is null!');
+              '    WARNING: Offline CAM succeeded but gradcam_image is null!');
           _logger.w(
-              '   ⚠️ This will cause the AI Explanation section to not display properly');
+              '    This will cause the AI Explanation section to not display properly');
           _logger.w(
-              '   ⚠️ Check OfflineCAMService.identifyPlantWithCAM() implementation');
+              '    Check OfflineCAMService.identifyPlantWithCAM() implementation');
         }
 
         // CRITICAL FIX: Ensure method is ALWAYS set
         // If method is null, set it to 'cam' (offline CAM was used)
         if (offlineResult['method'] == null || offlineResult['method'] == '') {
           offlineResult['method'] = 'cam';
-          _logger.w('   ⚠️ Method was null or empty, setting to "cam"');
+          _logger.w('    Method was null or empty, setting to "cam"');
         }
 
         // CRITICAL FIX: Ensure fallback_used is properly set
@@ -438,7 +438,7 @@ class AdaptiveGradCAMService {
         };
 
         // Debug: Verify gradcam_image is in the result
-        print('🔍 [AdaptiveGradCAM] Returning offline CAM result:');
+        print(' [AdaptiveGradCAM] Returning offline CAM result:');
         print('   Result keys: ${result.keys.toList()}');
         print('   gradcam_image present: ${result['gradcam_image'] != null}');
         if (result['gradcam_image'] != null) {
@@ -448,19 +448,19 @@ class AdaptiveGradCAMService {
             print('   gradcam_image size: ${img.length} bytes');
           }
         } else {
-          print('   ⚠️ WARNING: gradcam_image is null in return result!');
+          print('    WARNING: gradcam_image is null in return result!');
         }
 
         return result;
       } else {
-        _logger.e('❌ Offline CAM computation returned null');
+        _logger.e(' Offline CAM computation returned null');
         _logger.e('   This means identifyPlantWithCAM() returned null');
         _logger.e('   Check if offline service is properly initialized');
         _logger.e('   Check if image processing is working correctly');
       }
 
       // Both methods failed - return error information
-      _logger.e('❌ Both online and offline methods failed');
+      _logger.e(' Both online and offline methods failed');
 
       // Check why offline failed
       String offlineErrorReason = 'Unknown error';
@@ -518,7 +518,7 @@ class AdaptiveGradCAMService {
       {String? modelName}) async {
     try {
       print('═══════════════════════════════════════════════════════');
-      print('📴 [AdaptiveGradCAM] _tryOffline() called');
+      print('[AdaptiveGradCAM] _tryOffline() called');
       print('   Image bytes: ${imageBytes.length} bytes');
       print('   Offline service initialized: ${_offlineService.isInitialized}');
       if (modelName != null) {
@@ -527,22 +527,22 @@ class AdaptiveGradCAMService {
       print('═══════════════════════════════════════════════════════');
 
       if (!_offlineService.isInitialized) {
-        _logger.e('❌ Offline CAM service not initialized, cannot proceed');
+        _logger.e(' Offline CAM service not initialized, cannot proceed');
         _logger.e(
             '   Service initialization status: ${_offlineService.isInitialized}');
-        print('❌ [AdaptiveGradCAM] Offline CAM service not initialized!');
+        print(' [AdaptiveGradCAM] Offline CAM service not initialized!');
         final status = _offlineService.getInitializationStatus();
         print('   Status: $status');
         return null;
       }
 
-      _logger.d('📴 Starting offline CAM computation...');
+      _logger.d(' Starting offline CAM computation...');
       _logger.d('   Image bytes: ${imageBytes.length} bytes');
       if (modelName != null) {
         _logger.d('   Using model: $modelName');
       }
       print(
-          '✅ [AdaptiveGradCAM] Offline CAM service is initialized, proceeding...');
+          '\ [AdaptiveGradCAM] Offline CAM service is initialized, proceeding...');
 
       final stopwatch = Stopwatch()..start();
       final result = await _offlineService.identifyPlantWithCAM(imageBytes,
@@ -550,7 +550,7 @@ class AdaptiveGradCAMService {
       stopwatch.stop();
 
       if (result == null) {
-        _logger.e('❌ Offline CAM service returned null result');
+        _logger.e(' Offline CAM service returned null result');
         _logger.e('   Computation time: ${stopwatch.elapsedMilliseconds}ms');
         _logger.e('   This could indicate:');
         _logger.e('   1. Image preprocessing failed');
@@ -558,7 +558,7 @@ class AdaptiveGradCAMService {
         _logger.e('   3. CAM computation failed');
         _logger.e('   4. Heatmap generation failed');
       } else {
-        _logger.d('✅ Offline CAM computation completed successfully');
+        _logger.d(' Offline CAM computation completed successfully');
         _logger.d('   Computation time: ${stopwatch.elapsedMilliseconds}ms');
         _logger.d('   Result keys: ${result.keys.toList()}');
         _logger.d('   Method: ${result['method']}');
@@ -567,7 +567,7 @@ class AdaptiveGradCAMService {
         _logger.d('   Heatmap present: ${result['gradcam_image'] != null}');
 
         // Verify critical fields
-        print('🔍 [AdaptiveGradCAM] Offline CAM result details:');
+        print(' [AdaptiveGradCAM] Offline CAM result details:');
         print('   Result keys: ${result.keys.toList()}');
         print('   gradcam_image present: ${result['gradcam_image'] != null}');
         if (result['gradcam_image'] != null) {
@@ -577,23 +577,23 @@ class AdaptiveGradCAMService {
             print('   gradcam_image size: ${img.length} bytes');
           }
         } else {
-          print('   ⚠️ WARNING: gradcam_image is null in offline CAM result!');
-          _logger.w('   ⚠️ WARNING: gradcam_image is null in result!');
+          print('    WARNING: gradcam_image is null in offline CAM result!');
+          _logger.w('    WARNING: gradcam_image is null in result!');
           _logger
-              .w('   ⚠️ The AI Explanation section may not display correctly');
+              .w('    The AI Explanation section may not display correctly');
         }
         if (result['method'] == null) {
-          _logger.w('   ⚠️ WARNING: method is null in result!');
+          _logger.w('    WARNING: method is null in result!');
           result['method'] = 'cam'; // Set default method
         }
         if (result['all_predictions'] == null) {
-          _logger.w('   ⚠️ WARNING: all_predictions is null in result!');
+          _logger.w('    WARNING: all_predictions is null in result!');
         }
       }
 
       return result;
     } catch (e, stackTrace) {
-      _logger.e('❌ Offline service error: $e');
+      _logger.e(' Offline service error: $e');
       _logger.e('   Error type: ${e.runtimeType}');
       _logger.e('   Stack trace: $stackTrace');
       return null;
@@ -616,7 +616,7 @@ class AdaptiveGradCAMService {
       await initialize();
     }
 
-    _logger.i('📴 Forced offline mode - using CAM...');
+    _logger.i(' Forced offline mode - using CAM...');
     return await _tryOffline(imageBytes);
   }
 
@@ -626,11 +626,11 @@ class AdaptiveGradCAMService {
       await initialize();
     }
 
-    _logger.i('🌐 Forced online mode - using Grad-CAM...');
+    _logger.i(' Forced online mode - using Grad-CAM...');
     final result = await _tryOnline(imagePath);
 
     if (result == null) {
-      _logger.w('⚠️ Forced online mode failed');
+      _logger.w(' Forced online mode failed');
     }
 
     return result;

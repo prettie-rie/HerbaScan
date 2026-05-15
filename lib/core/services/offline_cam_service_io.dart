@@ -49,25 +49,25 @@ class OfflineCAMService {
   Future<void> initialize() async {
     // CRITICAL: Use print() for maximum visibility
     print('═══════════════════════════════════════════════════════');
-    print('🚀 [OfflineCAMService] initialize() called');
+    print(' [OfflineCAMService] initialize() called');
     print('   Current _isInitialized: $_isInitialized');
     print('═══════════════════════════════════════════════════════');
 
     if (_isInitialized) {
       _logger.i('OfflineCAMService already initialized');
-      print('✅ [OfflineCAMService] Already initialized, skipping');
+      print(' [OfflineCAMService] Already initialized, skipping');
       return;
     }
 
     try {
       _logger.i('═══════════════════════════════════════════════════════');
-      _logger.i('🚀 Initializing OfflineCAMService...');
+      _logger.i(' Initializing OfflineCAMService...');
       _logger.i('═══════════════════════════════════════════════════════');
-      print('🚀 [OfflineCAMService] Starting initialization...');
+      print(' [OfflineCAMService] Starting initialization...');
 
       // Step 1: Load TFLite model (try both models)
       _logger.i('Step 1: Loading TFLite model...');
-      print('📦 [OfflineCAMService] Step 1: Loading TFLite model...');
+      print(' [OfflineCAMService] Step 1: Loading TFLite model...');
       try {
         // Load MobileNetV2 multi-output model (ONLY MODEL - HerbaScan deprecated)
         List<String> mobilenetv2Paths = [
@@ -84,8 +84,8 @@ class OfflineCAMService {
             final sizeMB =
                 (assetData.lengthInBytes / 1024 / 1024).toStringAsFixed(2);
             _logger.i(
-                '✅ MobileNetV2 model found, size: ${assetData.lengthInBytes} bytes ($sizeMB MB)');
-            print('✅ [OfflineCAMService] MobileNetV2 model found!');
+                ' MobileNetV2 model found, size: ${assetData.lengthInBytes} bytes ($sizeMB MB)');
+            print(' [OfflineCAMService] MobileNetV2 model found!');
             print('   Path: $modelPath');
             mobilenetv2Path = modelPath;
             break;
@@ -95,9 +95,9 @@ class OfflineCAMService {
         }
 
         if (mobilenetv2Path == null) {
-          _logger.e('❌ MobileNetV2 multi-output model not found in bundle');
+          _logger.e(' MobileNetV2 multi-output model not found in bundle');
           print(
-              '❌ [OfflineCAMService] MobileNetV2 multi-output model not found!');
+              ' [OfflineCAMService] MobileNetV2 multi-output model not found!');
           print('   Expected: assets/models/mobilenetv2_multi_output.tflite');
           throw Exception(
             'MobileNetV2 multi-output model file not found. Please verify:\n'
@@ -113,19 +113,19 @@ class OfflineCAMService {
           final otaTflitePath = OtaModelService.instance.tflitePath;
           if (otaTflitePath != null) {
             _logger.d('   Creating MobileNetV2 interpreter from OTA file: $otaTflitePath');
-            print('✅ [OfflineCAMService] Loading MobileNetV2 from OTA path');
+            print(' [OfflineCAMService] Loading MobileNetV2 from OTA path');
             _mobilenetv2Interpreter = await Interpreter.fromFile(File(otaTflitePath));
           } else {
             _logger.d('   Creating MobileNetV2 interpreter from asset: $mobilenetv2Path');
             _mobilenetv2Interpreter = await Interpreter.fromAsset(mobilenetv2Path);
           }
           _mobilenetv2Interpreter!.allocateTensors();
-          _logger.i('✅ MobileNetV2 interpreter created successfully');
-          print('✅ [OfflineCAMService] MobileNetV2 interpreter created!');
+          _logger.i(' MobileNetV2 interpreter created successfully');
+          print(' [OfflineCAMService] MobileNetV2 interpreter created!');
         } catch (e) {
-          _logger.e('❌ Failed to create MobileNetV2 interpreter: $e');
+          _logger.e(' Failed to create MobileNetV2 interpreter: $e');
           print(
-              '❌ [OfflineCAMService] Failed to create MobileNetV2 interpreter');
+              ' [OfflineCAMService] Failed to create MobileNetV2 interpreter');
           rethrow;
         }
 
@@ -135,12 +135,12 @@ class OfflineCAMService {
 
         // Load interpreter (for backward compatibility)
         try {
-          _logger.i('✅ TFLite interpreter created successfully');
+          _logger.i(' TFLite interpreter created successfully');
           print(
-              '✅ [OfflineCAMService] TFLite interpreter created successfully!');
+              ' [OfflineCAMService] TFLite interpreter created successfully!');
         } catch (interpreterError, interpreterStack) {
-          _logger.e('❌ Failed to create TFLite interpreter: $interpreterError');
-          print('❌ [OfflineCAMService] Failed to create TFLite interpreter!');
+          _logger.e(' Failed to create TFLite interpreter: $interpreterError');
+          print(' [OfflineCAMService] Failed to create TFLite interpreter!');
           print('   Error: $interpreterError');
           print('   Error type: ${interpreterError.runtimeType}');
           print('   Stack trace: $interpreterStack');
@@ -169,7 +169,7 @@ class OfflineCAMService {
                 '   Output $i shape: $outputShape (dimensions: ${outputShape.length})');
           } catch (e) {
             _logger.e('     Failed to get output $i: $e');
-            print('   ❌ Failed to get output $i: $e');
+            print('    Failed to get output $i: $e');
           }
         }
 
@@ -185,8 +185,8 @@ class OfflineCAMService {
           try {
             output1Shape = _interpreter!.getOutputTensor(1).shape;
           } catch (e) {
-            _logger.w('   ⚠️ Output 1 not available: $e');
-            print('   ⚠️ Output 1 not available: $e');
+            _logger.w('    Output 1 not available: $e');
+            print('    Output 1 not available: $e');
             output1Shape = null;
           }
         }
@@ -204,7 +204,7 @@ class OfflineCAMService {
             inputShape[2] != 224 ||
             inputShape[3] != 3) {
           _logger.w(
-              '⚠️ WARNING: Input shape is unexpected: $inputShape (expected [1, 224, 224, 3])');
+              ' WARNING: Input shape is unexpected: $inputShape (expected [1, 224, 224, 3])');
         }
 
         // Analyze model structure
@@ -241,19 +241,19 @@ class OfflineCAMService {
             // Only feature maps - predictions might be computed separately
             featureMapShape = output0Shape;
             _logger.w(
-                '⚠️ Model has only one output (4D feature maps). Predictions will need to be computed separately.');
+                ' Model has only one output (4D feature maps). Predictions will need to be computed separately.');
             print(
-                '⚠️ [OfflineCAMService] Single-output model detected (feature maps only)');
+                ' [OfflineCAMService] Single-output model detected (feature maps only)');
             print(
                 '   This model structure requires computing predictions from feature maps');
           } else if (output0Is2D) {
             // Only predictions - no feature maps for CAM
             _logger.e(
-                '❌ Model has only predictions output, no feature maps for CAM!');
+                ' Model has only predictions output, no feature maps for CAM!');
             print(
-                '❌ [OfflineCAMService] Model has only predictions, cannot generate CAM heatmap!');
+                ' [OfflineCAMService] Model has only predictions, cannot generate CAM heatmap!');
             print('═══════════════════════════════════════════════════════');
-            print('⚠️ MODEL RE-EXPORT ISSUE DETECTED');
+            print(' MODEL RE-EXPORT ISSUE DETECTED');
             print('═══════════════════════════════════════════════════════');
             print('The re-exported model only has predictions output [1, 40]');
             print('CAM requires feature maps output [1, 7, 7, 1280]');
@@ -268,7 +268,7 @@ class OfflineCAMService {
             throw Exception(
                 'Model does not have feature maps output required for CAM. The re-exported model only has predictions [1, 40]. Please re-export with both feature maps [1, 7, 7, 1280] and predictions [1, 40] outputs.');
           } else {
-            _logger.e('❌ Unknown output structure: $output0Shape');
+            _logger.e(' Unknown output structure: $output0Shape');
             throw Exception('Model output structure is not recognized');
           }
         } else if (numOutputs == 2) {
@@ -277,14 +277,14 @@ class OfflineCAMService {
             // Output 0 = feature maps, Output 1 = predictions
             featureMapShape = output0Shape;
             _logger.i(
-                '✅ Model structure: Output 0 = feature maps, Output 1 = predictions');
+                ' Model structure: Output 0 = feature maps, Output 1 = predictions');
           } else if (output0Is2D && output1Is4D) {
             // Output 0 = predictions, Output 1 = feature maps
             featureMapShape = output1Shape;
             _logger.i(
-                '✅ Model structure: Output 0 = predictions, Output 1 = feature maps');
+                ' Model structure: Output 0 = predictions, Output 1 = feature maps');
           } else {
-            _logger.e('❌ Unexpected output combination:');
+            _logger.e(' Unexpected output combination:');
             _logger.e('   Output 0: $output0Shape (${output0Shape.length}D)');
             if (output1Shape != null) {
               _logger.e('   Output 1: $output1Shape (${output1Shape.length}D)');
@@ -295,7 +295,7 @@ class OfflineCAMService {
                 'Model outputs do not match expected format (need one 4D and one 2D output)');
           }
         } else {
-          _logger.e('❌ Model has $numOutputs outputs, expected 1 or 2');
+          _logger.e(' Model has $numOutputs outputs, expected 1 or 2');
           throw Exception(
               'Model has unexpected number of outputs: $numOutputs');
         }
@@ -303,13 +303,13 @@ class OfflineCAMService {
         // Validate and store feature maps shape
         // Note: featureMapShape is guaranteed to be non-null at this point
         if (featureMapShape.length != 4) {
-          _logger.w('⚠️ Feature maps shape is not 4D: $featureMapShape');
+          _logger.w(' Feature maps shape is not 4D: $featureMapShape');
           print(
-              '⚠️ [OfflineCAMService] Feature maps shape is not 4D: $featureMapShape');
+              ' [OfflineCAMService] Feature maps shape is not 4D: $featureMapShape');
         } else {
           _featureMapShape = featureMapShape;
-          _logger.i('✅ Feature maps shape: $featureMapShape');
-          print('✅ [OfflineCAMService] Feature maps shape: $featureMapShape');
+          _logger.i(' Feature maps shape: $featureMapShape');
+          print(' [OfflineCAMService] Feature maps shape: $featureMapShape');
 
           // Store output indices
           if (numOutputs == 2) {
@@ -330,20 +330,20 @@ class OfflineCAMService {
             // Single output - only feature maps
             _featureMapOutputIndex = 0;
             _predictionOutputIndex = -1; // No separate predictions output
-            _logger.w('⚠️ Single-output model: Only feature maps available');
+            _logger.w(' Single-output model: Only feature maps available');
             print(
-                '⚠️ [OfflineCAMService] Single-output model - predictions must be computed from features');
+                ' [OfflineCAMService] Single-output model - predictions must be computed from features');
           }
           _numModelOutputs = numOutputs;
         }
 
-        _logger.i('✅ Model structure validated');
+        _logger.i(' Model structure validated');
       } catch (e, stackTrace) {
-        _logger.e('❌ Failed to load TFLite model: $e');
+        _logger.e(' Failed to load TFLite model: $e');
         _logger.e('   Error type: ${e.runtimeType}');
         _logger.e('   Stack trace: $stackTrace');
         print('═══════════════════════════════════════════════════════');
-        print('❌ [OfflineCAMService] FAILED to load TFLite model!');
+        print(' [OfflineCAMService] FAILED to load TFLite model!');
         print('   Error: $e');
         print('   Error type: ${e.runtimeType}');
         print('   Stack trace: $stackTrace');
@@ -365,16 +365,16 @@ class OfflineCAMService {
 
       // Step 2: Load CAM weights from JSON
       _logger.i('Step 2: Loading CAM weights from JSON...');
-      print('📦 [OfflineCAMService] Step 2: Loading CAM weights from JSON...');
+      print(' [OfflineCAMService] Step 2: Loading CAM weights from JSON...');
       try {
         await _loadCAMWeights();
-        _logger.i('✅ CAM weights loaded successfully');
-        print('✅ [OfflineCAMService] CAM weights loaded successfully!');
+        _logger.i(' CAM weights loaded successfully');
+        print(' [OfflineCAMService] CAM weights loaded successfully!');
       } catch (e, stackTrace) {
-        _logger.e('❌ Failed to load CAM weights: $e');
+        _logger.e(' Failed to load CAM weights: $e');
         _logger.e('   Error type: ${e.runtimeType}');
         _logger.e('   Stack trace: $stackTrace');
-        print('❌ [OfflineCAMService] FAILED to load CAM weights!');
+        print(' [OfflineCAMService] FAILED to load CAM weights!');
         print('   Error: $e');
         print('   Error type: ${e.runtimeType}');
         print('   Stack trace: $stackTrace');
@@ -388,24 +388,24 @@ class OfflineCAMService {
 
       // Step 3: Load plant labels
       _logger.i('Step 3: Loading plant labels...');
-      print('📦 [OfflineCAMService] Step 3: Loading plant labels...');
+      print(' [OfflineCAMService] Step 3: Loading plant labels...');
       try {
         await _loadLabels();
         _logger.i(
-            '✅ Plant labels loaded successfully (${_labels!.length} classes)');
-        print('✅ [OfflineCAMService] Plant labels loaded successfully!');
+            ' Plant labels loaded successfully (${_labels!.length} classes)');
+        print(' [OfflineCAMService] Plant labels loaded successfully!');
         print('   Labels count: ${_labels!.length} classes');
       } catch (e, stackTrace) {
-        _logger.e('❌ Failed to load plant labels: $e');
+        _logger.e(' Failed to load plant labels: $e');
         _logger.e('   Error type: ${e.runtimeType}');
         _logger.e('   Stack trace: $stackTrace');
         print(
-            '⚠️ [OfflineCAMService] Failed to load plant labels (non-critical)');
+            ' [OfflineCAMService] Failed to load plant labels (non-critical)');
         print('   Error: $e');
         _logger.e('   This usually means:');
         _logger.e('   1. File is missing: assets/models/labels.json');
         _logger.e('   2. File format is incorrect');
-        _logger.w('⚠️ Continuing without labels (will use default names)');
+        _logger.w(' Continuing without labels (will use default names)');
         _labels = {}; // Allow continuation with empty labels
       }
 
@@ -419,29 +419,29 @@ class OfflineCAMService {
 
       _isInitialized = true;
       _logger.i('═══════════════════════════════════════════════════════');
-      _logger.i('✅ OfflineCAMService initialized successfully!');
+      _logger.i(' OfflineCAMService initialized successfully!');
       _logger.i('   Model: Loaded');
       _logger.i(
           '   CAM Weights: Loaded (${_camWeights!.length} features x ${_camWeights![0].length} classes)');
       _logger.i('   Labels: Loaded (${_labels?.length ?? 0} classes)');
       _logger.i('═══════════════════════════════════════════════════════');
       print('═══════════════════════════════════════════════════════');
-      print('✅ [OfflineCAMService] Initialized SUCCESSFULLY!');
-      print('   Model: Loaded ✅');
+      print(' [OfflineCAMService] Initialized SUCCESSFULLY!');
+      print('   Model: Loaded ');
       print(
-          '   CAM Weights: Loaded ✅ (${_camWeights!.length} features x ${_camWeights![0].length} classes)');
-      print('   Labels: Loaded ✅ (${_labels?.length ?? 0} classes)');
+          '   CAM Weights: Loaded  (${_camWeights!.length} features x ${_camWeights![0].length} classes)');
+      print('   Labels: Loaded  (${_labels?.length ?? 0} classes)');
       print('   _isInitialized: $_isInitialized');
       print('═══════════════════════════════════════════════════════');
     } catch (e, stackTrace) {
       _logger.e('═══════════════════════════════════════════════════════');
-      _logger.e('❌ Failed to initialize OfflineCAMService');
+      _logger.e(' Failed to initialize OfflineCAMService');
       _logger.e('   Error: $e');
       _logger.e('   Error type: ${e.runtimeType}');
       _logger.e('   Stack trace: $stackTrace');
       _logger.e('═══════════════════════════════════════════════════════');
       print('═══════════════════════════════════════════════════════');
-      print('❌ [OfflineCAMService] INITIALIZATION FAILED!');
+      print(' [OfflineCAMService] INITIALIZATION FAILED!');
       print('   Error: $e');
       print('   Error type: ${e.runtimeType}');
       print('   Stack trace: $stackTrace');
@@ -454,7 +454,7 @@ class OfflineCAMService {
       // Don't rethrow - allow app to continue with online-only mode
       // The adaptive service will handle fallback gracefully
       print(
-          '⚠️ [OfflineCAMService] Exception caught, NOT rethrowing (allowing app to continue)');
+          ' [OfflineCAMService] Exception caught, NOT rethrowing (allowing app to continue)');
     }
   }
 
@@ -470,10 +470,10 @@ class OfflineCAMService {
       if (otaClassIndicesPath != null) {
         try {
           jsonString = await File(otaClassIndicesPath).readAsString();
-          _logger.d('   ✅ Labels loaded from OTA path, size: ${jsonString.length} bytes');
-          print('   📋 Loaded class_indices.json from OTA path');
+          _logger.d('    Labels loaded from OTA path, size: ${jsonString.length} bytes');
+          print('    Loaded class_indices.json from OTA path');
         } catch (otaError) {
-          _logger.w('⚠️ OTA class_indices read failed ($otaError), falling back to asset');
+          _logger.w(' OTA class_indices read failed ($otaError), falling back to asset');
           jsonString = await rootBundle.loadString('assets/models/class_indices.json');
         }
       } else try {
@@ -481,23 +481,23 @@ class OfflineCAMService {
         jsonString =
             await rootBundle.loadString('assets/models/class_indices.json');
         _logger.d(
-            '   ✅ Labels file loaded (class_indices.json), size: ${jsonString.length} bytes');
-        print('   📋 Loaded class_indices.json');
+            '    Labels file loaded (class_indices.json), size: ${jsonString.length} bytes');
+        print('    Loaded class_indices.json');
       } catch (fileError) {
-        _logger.w('⚠️ Failed to load class_indices.json: $fileError');
+        _logger.w(' Failed to load class_indices.json: $fileError');
         _logger.w('   Trying labels.json (legacy format)...');
-        print('   ⚠️ Failed to load class_indices.json, trying labels.json...');
+        print('    Failed to load class_indices.json, trying labels.json...');
         try {
           jsonString = await rootBundle.loadString('assets/models/labels.json');
           _logger.d(
-              '   ✅ Labels file loaded (labels.json), size: ${jsonString.length} bytes');
-          print('   📋 Loaded labels.json (legacy)');
+              '    Labels file loaded (labels.json), size: ${jsonString.length} bytes');
+          print('    Loaded labels.json (legacy)');
         } catch (fileError2) {
-          _logger.w('⚠️ Failed to load labels file: $fileError2');
+          _logger.w(' Failed to load labels file: $fileError2');
           _logger.w(
               '   File paths tried: assets/models/class_indices.json, assets/models/labels.json');
           _logger.w('   Continuing without labels (will use default names)');
-          print('   ❌ Failed to load both class_indices.json and labels.json');
+          print('    Failed to load both class_indices.json and labels.json');
           _labels = {};
           return;
         }
@@ -508,9 +508,9 @@ class OfflineCAMService {
       Map<String, dynamic> jsonData;
       try {
         jsonData = jsonDecode(jsonString) as Map<String, dynamic>;
-        _logger.d('   ✅ JSON parsed successfully');
+        _logger.d('    JSON parsed successfully');
       } catch (parseError) {
-        _logger.w('⚠️ Failed to parse labels JSON: $parseError');
+        _logger.w(' Failed to parse labels JSON: $parseError');
         _logger.w('   Continuing without labels (will use default names)');
         _labels = {};
         return;
@@ -518,13 +518,13 @@ class OfflineCAMService {
 
       // Extract labels
       _labels = jsonData.map((key, value) => MapEntry(key, value.toString()));
-      _logger.i('✅ Labels loaded: ${_labels!.length} classes');
+      _logger.i(' Labels loaded: ${_labels!.length} classes');
 
       if (_labels!.isEmpty) {
-        _logger.w('⚠️ Labels map is empty');
+        _logger.w(' Labels map is empty');
       }
     } catch (e, stackTrace) {
-      _logger.w('⚠️ Error loading labels: $e');
+      _logger.w(' Error loading labels: $e');
       _logger.w('   Error type: ${e.runtimeType}');
       _logger.w('   Stack trace: $stackTrace');
       _logger.w('   Continuing without labels (will use default names)');
@@ -548,7 +548,7 @@ class OfflineCAMService {
   Future<void> _loadCAMWeights() async {
     try {
       _logger.i('Loading CAM weights from JSON files...');
-      print('📦 [OfflineCAMService] Loading CAM weights...');
+      print(' [OfflineCAMService] Loading CAM weights...');
 
       // Load MobileNetV2 CAM weights.
       // Priority: OTA file from documents dir → bundled asset.
@@ -556,7 +556,7 @@ class OfflineCAMService {
         final otaCamWeightsPath = OtaModelService.instance.camWeightsPath;
         final String jsonString;
         if (otaCamWeightsPath != null) {
-          print('✅ [OfflineCAMService] Loading CAM weights from OTA path');
+          print(' [OfflineCAMService] Loading CAM weights from OTA path');
           jsonString = await File(otaCamWeightsPath).readAsString();
         } else {
           jsonString = await rootBundle
@@ -572,12 +572,12 @@ class OfflineCAMService {
           return List<double>.from(row.map((val) => (val as num).toDouble()));
         }).toList();
         _logger.i(
-            '✅ MobileNetV2 CAM weights loaded: ${_mobilenetv2CamWeights!.length} features x ${_mobilenetv2CamWeights![0].length} classes');
-        print('✅ [OfflineCAMService] MobileNetV2 CAM weights loaded!');
+            ' MobileNetV2 CAM weights loaded: ${_mobilenetv2CamWeights!.length} features x ${_mobilenetv2CamWeights![0].length} classes');
+        print(' [OfflineCAMService] MobileNetV2 CAM weights loaded!');
       } catch (e) {
-        _logger.w('⚠️ Failed to load MobileNetV2 CAM weights: $e');
+        _logger.w(' Failed to load MobileNetV2 CAM weights: $e');
         print(
-            '⚠️ [OfflineCAMService] MobileNetV2 CAM weights not found, trying legacy...');
+            ' [OfflineCAMService] MobileNetV2 CAM weights not found, trying legacy...');
         // Try legacy path
         try {
           final jsonString =
@@ -591,9 +591,9 @@ class OfflineCAMService {
             }
             return List<double>.from(row.map((val) => (val as num).toDouble()));
           }).toList();
-          _logger.i('✅ Loaded CAM weights from legacy path for MobileNetV2');
+          _logger.i(' Loaded CAM weights from legacy path for MobileNetV2');
         } catch (e2) {
-          _logger.w('⚠️ Legacy CAM weights also failed: $e2');
+          _logger.w(' Legacy CAM weights also failed: $e2');
         }
       }
 
@@ -614,9 +614,9 @@ class OfflineCAMService {
             }
             return List<double>.from(row.map((val) => (val as num).toDouble()));
           }).toList();
-          _logger.i('✅ Loaded CAM weights from legacy single file');
+          _logger.i(' Loaded CAM weights from legacy single file');
         } catch (fileError) {
-          _logger.e('❌ Failed to load CAM weights file: $fileError');
+          _logger.e(' Failed to load CAM weights file: $fileError');
           _logger.e('   File path: assets/models/cam_weights.json');
           _logger.e('   This usually means:');
           _logger.e('   1. File is missing from assets/models/');
@@ -631,10 +631,10 @@ class OfflineCAMService {
         throw Exception('CAM weights are null or empty after loading');
       }
 
-      _logger.i('✅ CAM weights loaded successfully');
-      print('✅ [OfflineCAMService] CAM weights loaded!');
+      _logger.i(' CAM weights loaded successfully');
+      print(' [OfflineCAMService] CAM weights loaded!');
       print(
-          '   MobileNetV2 weights: ${_mobilenetv2CamWeights != null ? "✅" : "❌"}');
+          '   MobileNetV2 weights: ${_mobilenetv2CamWeights != null ? "" : ""}');
 
       // Note: Feature dimension validation happens later
       _logger.d(
@@ -642,7 +642,7 @@ class OfflineCAMService {
 
       return;
     } catch (e, stackTrace) {
-      _logger.e('❌ Error loading CAM weights: $e');
+      _logger.e(' Error loading CAM weights: $e');
       _logger.e('   Error type: ${e.runtimeType}');
       _logger.e('   Stack trace: $stackTrace');
       _camWeights = null;
@@ -672,7 +672,7 @@ class OfflineCAMService {
     if (modelName != null) {
       setPreferredModel(modelName);
       _logger.i('Using specified model for CAM: $modelName');
-      print('📌 [OfflineCAMService] Using model: $modelName');
+      print(' [OfflineCAMService] Using model: $modelName');
     }
     if (!_isInitialized) {
       _logger.w('Service not initialized, initializing now...');
@@ -686,17 +686,17 @@ class OfflineCAMService {
     }
 
     if (_interpreter == null) {
-      _logger.e('❌ TFLite interpreter is null - model not loaded');
+      _logger.e(' TFLite interpreter is null - model not loaded');
       return null;
     }
 
     if (_camWeights == null) {
-      _logger.e('❌ CAM weights are null - weights not loaded');
+      _logger.e(' CAM weights are null - weights not loaded');
       return null;
     }
 
     if (_labels == null || _labels!.isEmpty) {
-      _logger.e('❌ Plant labels are null or empty - labels not loaded');
+      _logger.e(' Plant labels are null or empty - labels not loaded');
       return null;
     }
 
@@ -730,7 +730,7 @@ class OfflineCAMService {
       if (oodConfig.notPlantClassIndex >= 0 &&
           oodConfig.notPlantClassIndex < predictions.length &&
           maxIdx == oodConfig.notPlantClassIndex) {
-        print('🚫 [OfflineCAM] Stage 2: top class is not_plant (idx $maxIdx)');
+        print(' [OfflineCAM] Stage 2: top class is not_plant (idx $maxIdx)');
         return {
           'validation_failed': true,
           'failure_reason': 'Validation Failed: Subject unrecognized or not a plant.',
@@ -740,21 +740,21 @@ class OfflineCAMService {
 
       // OOD threshold gate.
       if (maxConf < oodConfig.confidenceThresholdOod) {
-        print('🚫 [OfflineCAM] Stage 2: OOD — max_conf $maxConf < ${oodConfig.confidenceThresholdOod}');
+        print(' [OfflineCAM] Stage 2: OOD — max_conf $maxConf < ${oodConfig.confidenceThresholdOod}');
         return {
           'validation_failed': true,
           'failure_reason': 'Validation Failed: Subject unrecognized or not a plant.',
           'stage': 2,
         };
       }
-      print('✅ [OfflineCAM] Stage 2 PASSED — max_conf=$maxConf (idx $maxIdx)');
+      print(' [OfflineCAM] Stage 2 PASSED — max_conf=$maxConf (idx $maxIdx)');
 
       // 3. Compute CAM using SPATIAL features (preserves spatial information)
       // CRITICAL: Use spatialFeatures instead of pooled features for proper CAM
       // This preserves spatial information and creates an accurate heatmap
       final spatialFeatures =
           inferenceResult['spatialFeatures'] as List<List<List<double>>>;
-      print('🔍 [OfflineCAM] Computing CAM heatmap...');
+      print(' [OfflineCAM] Computing CAM heatmap...');
       print(
           '   Spatial features shape: [${spatialFeatures.length}, ${spatialFeatures[0].length}, ${spatialFeatures[0][0].length}]');
       print('   Predicted class index: $predictedClassIdx');
@@ -763,13 +763,13 @@ class OfflineCAMService {
           _generateSpatialCAM(spatialFeatures, predictedClassIdx);
       if (camHeatmap == null) {
         _logger
-            .e('❌ CAM computation failed - _generateSpatialCAM returned null');
+            .e(' CAM computation failed - _generateSpatialCAM returned null');
         print(
-            '❌ [OfflineCAM] CAM computation failed - _generateSpatialCAM returned null');
+            ' [OfflineCAM] CAM computation failed - _generateSpatialCAM returned null');
         return null;
       }
       print(
-          '✅ [OfflineCAM] CAM heatmap generated: [${camHeatmap.length}, ${camHeatmap[0].length}]');
+          ' [OfflineCAM] CAM heatmap generated: [${camHeatmap.length}, ${camHeatmap[0].length}]');
 
       // 4. Upscale heatmap (7x7 → 224x224) with bicubic interpolation
       final upscaledHeatmap =
@@ -798,9 +798,9 @@ class OfflineCAMService {
       final overlayImage = _overlayHeatmap(resizedOriginal, coloredHeatmap);
 
       // 8. Encode to PNG
-      print('🔍 [OfflineCAM] Encoding overlay image to PNG...');
+      print(' [OfflineCAM] Encoding overlay image to PNG...');
       final gradcamImageBytes = Uint8List.fromList(img.encodePng(overlayImage));
-      print('✅ [OfflineCAM] PNG encoded: ${gradcamImageBytes.length} bytes');
+      print(' [OfflineCAM] PNG encoded: ${gradcamImageBytes.length} bytes');
 
       stopwatch.stop();
 
@@ -813,7 +813,7 @@ class OfflineCAMService {
 
       // Enhanced logging for debugging
       print('═══════════════════════════════════════════════════════');
-      print('✅ [OfflineCAM] CAM heatmap generated successfully');
+      print(' [OfflineCAM] CAM heatmap generated successfully');
       print('   Heatmap size: ${gradcamImageBytes.length} bytes');
       print(
           '   Top prediction: ${topPredictions[0]['label']} (${predictions[predictedClassIdx]})');
@@ -822,7 +822,7 @@ class OfflineCAMService {
           '   Returning result with gradcam_image: ${gradcamImageBytes.length} bytes');
       print('═══════════════════════════════════════════════════════');
 
-      _logger.i('✅ CAM heatmap generated successfully');
+      _logger.i(' CAM heatmap generated successfully');
       _logger.i('   Heatmap size: ${gradcamImageBytes.length} bytes');
       _logger.i(
           '   Top prediction: ${topPredictions[0]['label']} (${predictions[predictedClassIdx]})');
@@ -911,7 +911,7 @@ class OfflineCAMService {
           predictionsTensor =
               _interpreter!.getOutputTensor(_predictionOutputIndex);
         } catch (e) {
-          _logger.w('⚠️ Predictions output not available: $e');
+          _logger.w(' Predictions output not available: $e');
           predictionsTensor = null;
         }
       }
@@ -919,7 +919,7 @@ class OfflineCAMService {
       // Prepare output buffers
       // CRITICAL: tflite_flutter expects output buffers to match tensor shapes exactly
       final featuresShape = featuresTensor.shape;
-      _logger.i('📊 Preparing output buffers:');
+      _logger.i(' Preparing output buffers:');
       _logger.i(
           '   Features tensor shape: $featuresShape (${featuresShape.length}D)');
 
@@ -930,7 +930,7 @@ class OfflineCAMService {
       // Verify shape is 4D: [batch, H, W, C]
       if (featuresShape.length != 4) {
         _logger.e(
-            '❌ Features tensor must be 4D, got ${featuresShape.length}D: $featuresShape');
+            ' Features tensor must be 4D, got ${featuresShape.length}D: $featuresShape');
         throw Exception('Invalid features tensor shape: $featuresShape');
       }
 
@@ -987,14 +987,14 @@ class OfflineCAMService {
           _logger.d(
               '   Created 2D predictions buffer (from 1D): [1][${predictionsOutput[0].length}]');
         } else {
-          _logger.e('❌ Unexpected predictions tensor shape: $predictionsShape');
+          _logger.e(' Unexpected predictions tensor shape: $predictionsShape');
           throw Exception(
               'Invalid predictions tensor shape: $predictionsShape');
         }
       } else {
         // Single-output model: predictions will be computed from features
         _logger.i(
-            '📊 Single-output model: Will compute predictions from feature maps');
+            ' Single-output model: Will compute predictions from feature maps');
         predictionsOutput = null;
       }
 
@@ -1007,7 +1007,7 @@ class OfflineCAMService {
 
       // Run inference
       try {
-        _logger.d('🚀 Running inference...');
+        _logger.d(' Running inference...');
         _logger.d('   Input shape: ${_interpreter!.getInputTensor(0).shape}');
         _logger.d('   Output 0 expected shape: ${featuresTensor.shape}');
         if (predictionsTensor != null) {
@@ -1042,9 +1042,9 @@ class OfflineCAMService {
         }
 
         _interpreter!.runForMultipleInputs(inputs, outputs);
-        _logger.d('✅ Inference completed successfully');
+        _logger.d(' Inference completed successfully');
       } catch (e, stackTrace) {
-        _logger.e('❌ Inference failed: $e');
+        _logger.e(' Inference failed: $e');
         _logger.e('   Error type: ${e.runtimeType}');
         _logger.e('   Stack trace: $stackTrace');
         // Log detailed buffer information for debugging
@@ -1082,7 +1082,7 @@ class OfflineCAMService {
 
       // Validate outputs
       if (spatialFeatures.isEmpty || spatialFeatures[0].isEmpty) {
-        _logger.e('❌ Model returned empty feature maps!');
+        _logger.e(' Model returned empty feature maps!');
         _logger.e('   This suggests the model is not working correctly');
         return null;
       }
@@ -1094,7 +1094,7 @@ class OfflineCAMService {
         final rawPredictions = predictionsOutput[0]; // Extract batch 0
         if (rawPredictions.isEmpty || rawPredictions.every((p) => p == 0.0)) {
           _logger.w(
-              '⚠️ Model returned empty or zero predictions, computing from features');
+              ' Model returned empty or zero predictions, computing from features');
           // Fallback: compute predictions from features
           finalPredictions = _computePredictionsFromFeatures(spatialFeatures);
         } else {
@@ -1102,7 +1102,7 @@ class OfflineCAMService {
         }
       } else {
         // Single-output model: compute predictions from feature maps using CAM weights
-        _logger.i('📊 Computing predictions from feature maps...');
+        _logger.i(' Computing predictions from feature maps...');
         finalPredictions = _computePredictionsFromFeatures(spatialFeatures);
       }
 
@@ -1164,7 +1164,7 @@ class OfflineCAMService {
       final predictions = List<double>.filled(numClasses, 0.0);
 
       if (_camWeights == null) {
-        _logger.e('❌ CAM weights not available for computing predictions');
+        _logger.e(' CAM weights not available for computing predictions');
         // Return uniform predictions as fallback
         return List<double>.filled(numClasses, 1.0 / numClasses);
       }
@@ -1192,13 +1192,13 @@ class OfflineCAMService {
 
       final probabilities = expPredictions.map((exp) => exp / sumExp).toList();
 
-      _logger.d('✅ Computed predictions from features');
+      _logger.d(' Computed predictions from features');
       _logger.d(
           '   Max probability: ${probabilities.reduce((a, b) => a > b ? a : b)}');
 
       return probabilities;
     } catch (e, stackTrace) {
-      _logger.e('❌ Failed to compute predictions from features: $e');
+      _logger.e(' Failed to compute predictions from features: $e');
       _logger.e('   Stack trace: $stackTrace');
       // Return uniform predictions as fallback
       return List<double>.filled(numClasses, 1.0 / numClasses);
@@ -1267,12 +1267,12 @@ class OfflineCAMService {
       if (_featureMapShape != null) {
         if (height != _featureMapShape![1] || width != _featureMapShape![2]) {
           _logger.w(
-              '⚠️ Spatial feature dimensions mismatch: expected ${_featureMapShape![1]}x${_featureMapShape![2]}, got ${height}x$width');
+              ' Spatial feature dimensions mismatch: expected ${_featureMapShape![1]}x${_featureMapShape![2]}, got ${height}x$width');
         }
       } else if (height != expectedFeatureMapShape[0] ||
           width != expectedFeatureMapShape[1]) {
         _logger.w(
-            '⚠️ Spatial feature dimensions mismatch: expected ${expectedFeatureMapShape[0]}x${expectedFeatureMapShape[1]}, got ${height}x$width');
+            ' Spatial feature dimensions mismatch: expected ${expectedFeatureMapShape[0]}x${expectedFeatureMapShape[1]}, got ${height}x$width');
       }
 
       // Create heatmap [7, 7]

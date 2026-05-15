@@ -71,12 +71,12 @@ class PlantClassifierService {
   
   Future<List<Map<String, dynamic>>> classifyPlant(Uint8List imageData) async {
     if (!_isInitialized) {
-      print('⚠️ Models not loaded, returning empty results');
+      print(' Models not loaded, returning empty results');
       return [];
     }
     
     try {
-      print('🔄 Starting plant classification...');
+      print(' Starting plant classification...');
       
       // Step 1: Preprocess image
       final processedImage = _preprocessImage(imageData);
@@ -89,7 +89,7 @@ class PlantClassifierService {
       try {
         predictions = await _getRandomForestPredictions(features);
       } catch (e) {
-        print('⚠️ Random Forest failed, using MobileNet features directly');
+        print(' Random Forest failed, using MobileNet features directly');
         // Use MobileNet features as predictions (simplified approach)
         predictions = features.take(_numClasses).toList();
         if (predictions.length < _numClasses) {
@@ -100,11 +100,11 @@ class PlantClassifierService {
       // Step 4: Get top 3 predictions
       final topPredictions = _getTopPredictions(predictions, 3);
       
-      print('✅ Classification complete');
+      print(' Classification complete');
       return topPredictions;
       
     } catch (e) {
-      print('❌ Error during classification: $e');
+      print(' Error during classification: $e');
       rethrow;
     }
   }
@@ -112,7 +112,7 @@ class PlantClassifierService {
   /// Classify plant with GradCAM visualization
   Future<Map<String, dynamic>> classifyPlantWithGradCAM(Uint8List imageData) async {
     if (!_isInitialized) {
-      print('⚠️ Models not loaded, returning empty results');
+      print(' Models not loaded, returning empty results');
       return {
         'predictions': <Map<String, dynamic>>[],
         'gradCAMPath': null,
@@ -121,7 +121,7 @@ class PlantClassifierService {
     }
     
     try {
-      print('🔄 Starting plant classification with GradCAM...');
+      print(' Starting plant classification with GradCAM...');
       
       // Step 1: Preprocess image
       final processedImage = _preprocessImage(imageData);
@@ -134,7 +134,7 @@ class PlantClassifierService {
       try {
         predictions = await _getRandomForestPredictions(features);
       } catch (e) {
-        print('⚠️ Random Forest failed, using MobileNet features directly');
+        print(' Random Forest failed, using MobileNet features directly');
         // Use MobileNet features as predictions (simplified approach)
         predictions = features.take(_numClasses).toList();
         if (predictions.length < _numClasses) {
@@ -159,7 +159,7 @@ class PlantClassifierService {
       gradCAMPath = null;
       summaryGradCAMPath = null;
       
-      print('✅ Classification with GradCAM complete');
+      print(' Classification with GradCAM complete');
       return {
         'predictions': topPredictions,
         'gradCAMPath': gradCAMPath,
@@ -167,7 +167,7 @@ class PlantClassifierService {
       };
       
     } catch (e) {
-      print('❌ Error during classification with GradCAM: $e');
+      print(' Error during classification with GradCAM: $e');
       rethrow;
     }
   }
@@ -213,7 +213,7 @@ class PlantClassifierService {
       return tensor;
       
     } catch (e) {
-      print('❌ Error preprocessing image: $e');
+      print(' Error preprocessing image: $e');
       rethrow;
     }
   }
@@ -251,7 +251,7 @@ class PlantClassifierService {
       return output[0];
       
     } catch (e) {
-      print('❌ Error extracting features: $e');
+      print(' Error extracting features: $e');
       rethrow;
     }
   }
@@ -276,7 +276,7 @@ class PlantClassifierService {
       return output[0];
       
     } catch (e) {
-      print('❌ Error getting Random Forest predictions: $e');
+      print(' Error getting Random Forest predictions: $e');
       rethrow;
     }
   }

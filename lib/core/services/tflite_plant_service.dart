@@ -118,15 +118,15 @@ class TflitePlantService {
   }
 
   Future<void> _loadLabels() async {
-    print("   📋 Loading labels from: $labelPath");
+    print("    Loading labels from: $labelPath");
     try {
       final otaClassIndicesPath = OtaModelService.instance.classIndicesPath;
       final String labelData = otaClassIndicesPath != null
           ? await File(otaClassIndicesPath).readAsString()
           : await rootBundle.loadString(labelPath);
-      print("   📋 Label data loaded: ${labelData.length} characters");
+      print("    Label data loaded: ${labelData.length} characters");
       final Map<String, dynamic> jsonMap = json.decode(labelData);
-      print("   📋 Parsed ${jsonMap.length} labels");
+      print("    Parsed ${jsonMap.length} labels");
       _labels = List<String>.filled(jsonMap.length, 'Unknown');
       jsonMap.forEach((name, index) {
         if (index is int && index < _labels!.length) {
@@ -152,9 +152,9 @@ class TflitePlantService {
     }
 
     print(
-        "   MobileNetV2 interpreter: ${_mobilenetv2Interpreter != null ? "✅" : "❌"}");
+        "   MobileNetV2 interpreter: ${_mobilenetv2Interpreter != null ? "" : ""}");
     print(
-        "   Labels loaded: ${_labels != null && _labels!.isNotEmpty ? "✅ (${_labels!.length} labels)" : "❌"}");
+        "   Labels loaded: ${_labels != null && _labels!.isNotEmpty ? " (${_labels!.length} labels)" : ""}");
 
     if (_labels == null || _labels!.isEmpty) {
       print("    ERROR: Labels not loaded!");
@@ -303,7 +303,7 @@ class TflitePlantService {
               " MobileNetV2: ${_labels![maxIndex]} (${(maxScore * 100).toStringAsFixed(2)}%)");
         } else {
           print(
-              "⚠MobileNetV2: Invalid prediction (maxIndex: $maxIndex, labels length: ${_labels!.length}, score: $maxScore)");
+              "MobileNetV2: Invalid prediction (maxIndex: $maxIndex, labels length: ${_labels!.length}, score: $maxScore)");
         }
       } catch (e, stackTrace) {
         print(" Error running MobileNetV2 inference: $e");

@@ -44,7 +44,7 @@ class PerformanceMonitor {
 
     await _saveMetric(metric);
     
-    print('⚡ $operationName: ${duration.inMilliseconds}ms');
+    print(' $operationName: ${duration.inMilliseconds}ms');
   }
 
   /// Record a metric directly

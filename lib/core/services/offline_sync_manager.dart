@@ -42,7 +42,7 @@ class OfflineSyncManager {
   /// Initialize sync manager
   Future<void> initialize() async {
     try {
-      print('🔄 Initializing Offline Sync Manager...');
+      print(' Initializing Offline Sync Manager...');
 
       // Load sync preferences
       await _loadSyncPreferences();
@@ -52,9 +52,9 @@ class OfflineSyncManager {
         _startPeriodicSync();
       }
 
-      print('✅ Offline Sync Manager initialized');
+      print(' Offline Sync Manager initialized');
     } catch (e) {
-      print('❌ Error initializing Offline Sync Manager: $e');
+      print(' Error initializing Offline Sync Manager: $e');
     }
   }
 
@@ -64,7 +64,7 @@ class OfflineSyncManager {
       final prefs = await SharedPreferences.getInstance();
       _isOnline = prefs.getBool('isOnline') ?? true;
     } catch (e) {
-      print('❌ Error loading sync preferences: $e');
+      print(' Error loading sync preferences: $e');
       _isOnline = true;
     }
   }
@@ -75,7 +75,7 @@ class OfflineSyncManager {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isOnline', _isOnline);
     } catch (e) {
-      print('❌ Error saving sync preferences: $e');
+      print(' Error saving sync preferences: $e');
     }
   }
 
@@ -120,7 +120,7 @@ class OfflineSyncManager {
       _syncStatusController.add(true);
       _syncProgressController.add('Starting sync...');
 
-      print('🔄 Starting sync operation...');
+      print(' Starting sync operation...');
 
       // Get pending sync data
       final pendingData = await _getPendingSyncData();
@@ -140,7 +140,7 @@ class OfflineSyncManager {
         await _markDataAsSynced(pendingData);
         _retryCount = 0;
         _syncProgressController.add('Sync completed successfully');
-        print('✅ Sync completed successfully');
+        print(' Sync completed successfully');
       } else {
         throw Exception('Sync failed');
       }
@@ -150,7 +150,7 @@ class OfflineSyncManager {
       _lastSyncError = e.toString();
       _retryCount++;
       _syncProgressController.add('Sync failed: $e');
-      print('❌ Sync failed: $e');
+      print(' Sync failed: $e');
 
       // Schedule retry if under max retries
       if (_retryCount < _maxRetries) {
@@ -187,7 +187,7 @@ class OfflineSyncManager {
           .map((json) => Map<String, dynamic>.from(jsonDecode(json)))
           .toList();
     } catch (e) {
-      print('❌ Error getting pending sync data: $e');
+      print(' Error getting pending sync data: $e');
       return [];
     }
   }
@@ -200,7 +200,7 @@ class OfflineSyncManager {
 
       await prefs.setStringList('pendingSyncData', jsonData);
     } catch (e) {
-      print('❌ Error saving pending sync data: $e');
+      print(' Error saving pending sync data: $e');
     }
   }
 
@@ -216,7 +216,7 @@ class OfflineSyncManager {
         _performSync();
       }
     } catch (e) {
-      print('❌ Error adding to pending sync: $e');
+      print(' Error adding to pending sync: $e');
     }
   }
 
@@ -226,7 +226,7 @@ class OfflineSyncManager {
       // This is a placeholder implementation
       // In a real app, you would send data to your server
 
-      print('📤 Syncing ${data.length} items to server...');
+      print(' Syncing ${data.length} items to server...');
 
       // Simulate network request
       await Future.delayed(const Duration(seconds: 2));
@@ -240,7 +240,7 @@ class OfflineSyncManager {
 
       return true;
     } catch (e) {
-      print('❌ Error syncing data to server: $e');
+      print(' Error syncing data to server: $e');
       return false;
     }
   }
@@ -261,9 +261,9 @@ class OfflineSyncManager {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('lastSyncTime', DateTime.now().toIso8601String());
 
-      print('✅ Marked ${syncedData.length} items as synced');
+      print(' Marked ${syncedData.length} items as synced');
     } catch (e) {
-      print('❌ Error marking data as synced: $e');
+      print(' Error marking data as synced: $e');
     }
   }
 
@@ -280,7 +280,7 @@ class OfflineSyncManager {
 
       _syncStatsController.add(stats);
     } catch (e) {
-      print('❌ Error updating sync stats: $e');
+      print(' Error updating sync stats: $e');
     }
   }
 
@@ -301,7 +301,7 @@ class OfflineSyncManager {
         'nextSyncIn': _getNextSyncTime(),
       };
     } catch (e) {
-      print('❌ Error getting sync stats: $e');
+      print(' Error getting sync stats: $e');
       return {
         'isOnline': false,
         'isSyncing': false,
@@ -341,9 +341,9 @@ class OfflineSyncManager {
       _retryCount = 0;
       _lastSyncError = null;
 
-      print('🗑️ Sync data cleared');
+      print(' Sync data cleared');
     } catch (e) {
-      print('❌ Error clearing sync data: $e');
+      print(' Error clearing sync data: $e');
     }
   }
 

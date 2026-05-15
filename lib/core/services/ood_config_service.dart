@@ -68,14 +68,14 @@ class OodConfigService {
       }
 
       _loaded = true;
-      print('✅ [OodConfigService] Config loaded — '
+      print(' [OodConfigService] Config loaded — '
           'blur≥$blurThreshold  dark≥$darknessThreshold  '
           'ood≥$confidenceThresholdOod  accept≥$confidenceThresholdAccept  '
           'notPlantIdx=$notPlantClassIndex');
     } catch (e) {
       // Use hard-coded defaults; mark as loaded so we don't retry every call.
       _loaded = true;
-      print('⚠️ [OodConfigService] Could not load ood_safety_config.json: $e'
+      print(' [OodConfigService] Could not load ood_safety_config.json: $e'
           '\n   Using built-in defaults.');
     }
   }

@@ -50,7 +50,7 @@ class OfflineService {
     if (_isInitialized) return;
 
     try {
-      print('🔄 Initializing Offline Service...');
+      print(' Initializing Offline Service...');
 
       // Load offline mode preference
       await _loadOfflineModePreference();
@@ -74,9 +74,9 @@ class OfflineService {
       await _initializeOfflineAI();
 
       _isInitialized = true;
-      print('✅ Offline Service initialized successfully');
+      print(' Offline Service initialized successfully');
     } catch (e) {
-      print('❌ Error initializing Offline Service: $e');
+      print(' Error initializing Offline Service: $e');
       rethrow;
     }
   }
@@ -86,9 +86,9 @@ class OfflineService {
     try {
       final prefs = await SharedPreferences.getInstance();
       _isOfflineMode = prefs.getBool('isOfflineMode') ?? false;
-      print('📱 Offline mode preference: $_isOfflineMode');
+      print(' Offline mode preference: $_isOfflineMode');
     } catch (e) {
-      print('❌ Error loading offline mode preference: $e');
+      print(' Error loading offline mode preference: $e');
       _isOfflineMode = false;
     }
   }
@@ -106,7 +106,7 @@ class OfflineService {
         _isOnline = _isConnected(results);
         
         if (wasOnline != _isOnline) {
-          print('🌐 Connectivity changed: ${_isOnline ? "Online" : "Offline"}');
+          print(' Connectivity changed: ${_isOnline ? "Online" : "Offline"}');
           _connectivityController.add(_isOnline);
           
           // Update sync manager
@@ -119,9 +119,9 @@ class OfflineService {
         }
       });
 
-      print('📡 Connectivity monitoring initialized');
+      print(' Connectivity monitoring initialized');
     } catch (e) {
-      print('❌ Error initializing connectivity monitoring: $e');
+      print(' Error initializing connectivity monitoring: $e');
       _isOnline = false;
     }
   }
@@ -142,12 +142,12 @@ class OfflineService {
       final offlineDir = Directory('${appDir.path}/offline_data');
       if (!await offlineDir.exists()) {
         await offlineDir.create(recursive: true);
-        print('📁 Created offline data directory');
+        print(' Created offline data directory');
       }
 
-      print('💾 Offline storage initialized');
+      print(' Offline storage initialized');
     } catch (e) {
-      print('❌ Error initializing offline storage: $e');
+      print(' Error initializing offline storage: $e');
       rethrow;
     }
   }
@@ -163,10 +163,10 @@ class OfflineService {
               Uri.splitQueryString(json))))
           .toList();
 
-      print('📋 Loaded ${_pendingSyncResults.length} pending sync results');
+      print(' Loaded ${_pendingSyncResults.length} pending sync results');
       _pendingSyncController.add(_pendingSyncResults);
     } catch (e) {
-      print('❌ Error loading pending sync results: $e');
+      print(' Error loading pending sync results: $e');
       _pendingSyncResults = [];
     }
   }
@@ -178,12 +178,12 @@ class OfflineService {
       await _classifierService.loadModels();
       
       if (!_classifierService.isInitialized) {
-        print('⚠️ AI models not loaded - offline processing may be limited');
+        print(' AI models not loaded - offline processing may be limited');
       } else {
-        print('🤖 AI models loaded for offline processing');
+        print(' AI models loaded for offline processing');
       }
     } catch (e) {
-      print('❌ Error initializing offline AI: $e');
+      print(' Error initializing offline AI: $e');
       // Don't rethrow - app can still work without AI
     }
   }
@@ -196,14 +196,14 @@ class OfflineService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isOfflineMode', _isOfflineMode);
       
-      print('🔄 Offline mode toggled: $_isOfflineMode');
+      print(' Offline mode toggled: $_isOfflineMode');
       
       // If switching to online mode and there are pending syncs, start sync
       if (!_isOfflineMode && _isOnline && _pendingSyncResults.isNotEmpty) {
         _startSyncProcess();
       }
     } catch (e) {
-      print('❌ Error toggling offline mode: $e');
+      print(' Error toggling offline mode: $e');
     }
   }
 
@@ -218,15 +218,15 @@ class OfflineService {
         throw Exception('AI models not available for offline processing');
       }
 
-      print('🌿 Processing plant offline...');
+      print(' Processing plant offline...');
       
       // Use AI classifier service (works offline)
       final predictions = await _classifierService.classifyPlant(imageData);
       
-      print('✅ Offline plant processing completed');
+      print(' Offline plant processing completed');
       return predictions;
     } catch (e) {
-      print('❌ Error processing plant offline: $e');
+      print(' Error processing plant offline: $e');
       rethrow;
     }
   }
@@ -242,12 +242,12 @@ class OfflineService {
         _pendingSyncResults.add(result);
         await _savePendingSyncResults();
         _pendingSyncController.add(_pendingSyncResults);
-        print('💾 Scan result saved offline (pending sync)');
+        print(' Scan result saved offline (pending sync)');
       } else {
-        print('💾 Scan result saved and synced');
+        print(' Scan result saved and synced');
       }
     } catch (e) {
-      print('❌ Error saving scan result offline: $e');
+      print(' Error saving scan result offline: $e');
       rethrow;
     }
   }
@@ -257,7 +257,7 @@ class OfflineService {
     try {
       return await _databaseService.getScanHistory();
     } catch (e) {
-      print('❌ Error getting offline scan history: $e');
+      print(' Error getting offline scan history: $e');
       return [];
     }
   }
@@ -267,7 +267,7 @@ class OfflineService {
     try {
       return await _databaseService.getAllPlants();
     } catch (e) {
-      print('❌ Error getting offline plants: $e');
+      print(' Error getting offline plants: $e');
       return [];
     }
   }
@@ -277,7 +277,7 @@ class OfflineService {
     try {
       return await _databaseService.getDOHApprovedPlants();
     } catch (e) {
-      print('❌ Error getting offline DOH plants: $e');
+      print(' Error getting offline DOH plants: $e');
       return [];
     }
   }
@@ -292,7 +292,7 @@ class OfflineService {
                plant.localName.toLowerCase().contains(query.toLowerCase());
       }).toList();
     } catch (e) {
-      print('❌ Error searching plants offline: $e');
+      print(' Error searching plants offline: $e');
       return [];
     }
   }
@@ -308,7 +308,7 @@ class OfflineService {
       
       await prefs.setStringList('pendingSyncResults', pendingSyncData);
     } catch (e) {
-      print('❌ Error saving pending sync results: $e');
+      print(' Error saving pending sync results: $e');
     }
   }
 
@@ -328,7 +328,7 @@ class OfflineService {
   /// Sync pending results to server (placeholder for future implementation)
   Future<void> _syncPendingResults() async {
     try {
-      print('🔄 Syncing ${_pendingSyncResults.length} pending results...');
+      print(' Syncing ${_pendingSyncResults.length} pending results...');
       
       // TODO: Implement actual server sync
       // For now, just simulate successful sync
@@ -339,9 +339,9 @@ class OfflineService {
       await _savePendingSyncResults();
       _pendingSyncController.add(_pendingSyncResults);
       
-      print('✅ Pending results synced successfully');
+      print(' Pending results synced successfully');
     } catch (e) {
-      print('❌ Error syncing pending results: $e');
+      print(' Error syncing pending results: $e');
     }
   }
 
@@ -372,7 +372,7 @@ class OfflineService {
         'aiLastError': modelHealth['lastLoadError'],
       };
     } catch (e) {
-      print('❌ Error getting offline stats: $e');
+      print(' Error getting offline stats: $e');
       return {
         'totalScans': 0,
         'totalPlants': 0,
@@ -400,9 +400,9 @@ class OfflineService {
       await _savePendingSyncResults();
       _pendingSyncController.add(_pendingSyncResults);
       
-      print('🗑️ Offline data cleared');
+      print(' Offline data cleared');
     } catch (e) {
-      print('❌ Error clearing offline data: $e');
+      print(' Error clearing offline data: $e');
       rethrow;
     }
   }
@@ -423,7 +423,7 @@ class OfflineService {
         'lastUpdated': DateTime.now().toIso8601String(),
       };
     } catch (e) {
-      print('❌ Error getting comprehensive stats: $e');
+      print(' Error getting comprehensive stats: $e');
       return await getOfflineStats();
     }
   }
@@ -432,9 +432,9 @@ class OfflineService {
   Future<void> optimizeStorage() async {
     try {
       await _dataManager.optimizeStorage();
-      print('✅ Storage optimization completed');
+      print(' Storage optimization completed');
     } catch (e) {
-      print('❌ Error optimizing storage: $e');
+      print(' Error optimizing storage: $e');
       rethrow;
     }
   }
@@ -444,7 +444,7 @@ class OfflineService {
     try {
       return await _dataManager.exportOfflineData();
     } catch (e) {
-      print('❌ Error exporting offline data: $e');
+      print(' Error exporting offline data: $e');
       rethrow;
     }
   }
@@ -453,9 +453,9 @@ class OfflineService {
   Future<void> importOfflineData(Map<String, dynamic> data) async {
     try {
       await _dataManager.importOfflineData(data);
-      print('✅ Offline data imported successfully');
+      print(' Offline data imported successfully');
     } catch (e) {
-      print('❌ Error importing offline data: $e');
+      print(' Error importing offline data: $e');
       rethrow;
     }
   }
@@ -464,9 +464,9 @@ class OfflineService {
   Future<void> forceSync() async {
     try {
       await _syncManager.forceSync();
-      print('✅ Force sync completed');
+      print(' Force sync completed');
     } catch (e) {
-      print('❌ Error force syncing: $e');
+      print(' Error force syncing: $e');
       rethrow;
     }
   }
@@ -485,7 +485,7 @@ class OfflineService {
     try {
       return await _dataManager.isOfflineDataAvailable();
     } catch (e) {
-      print('❌ Error checking offline data availability: $e');
+      print(' Error checking offline data availability: $e');
       return false;
     }
   }
@@ -495,7 +495,7 @@ class OfflineService {
     try {
       return await _dataManager.getDataHealthStatus();
     } catch (e) {
-      print('❌ Error getting data health: $e');
+      print(' Error getting data health: $e');
       return {
         'isHealthy': false,
         'hasData': false,

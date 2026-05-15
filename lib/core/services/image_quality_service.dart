@@ -67,28 +67,28 @@ class ImageQualityService {
       }
       final mean = pixelSum / (gray.width * gray.height);
 
-      print('🔍 [ImageQualityService] darkness mean=$mean  threshold=${_oodConfig.darknessThreshold}');
+      print(' [ImageQualityService] darkness mean=$mean  threshold=${_oodConfig.darknessThreshold}');
 
       if (mean < _oodConfig.darknessThreshold) {
-        print('🚫 [ImageQualityService] DARK — mean $mean < ${_oodConfig.darknessThreshold}');
+        print(' [ImageQualityService] DARK — mean $mean < ${_oodConfig.darknessThreshold}');
         return const ImageQualityResult(passed: false, failureReason: _tooDark);
       }
 
       // ── Blur check (Variance of Laplacian) ──────────────────────────────
       final blurScore = _laplacianVariance(gray);
 
-      print('🔍 [ImageQualityService] blur score=$blurScore  threshold=${_oodConfig.blurThreshold}');
+      print(' [ImageQualityService] blur score=$blurScore  threshold=${_oodConfig.blurThreshold}');
 
       if (blurScore < _oodConfig.blurThreshold) {
-        print('🚫 [ImageQualityService] BLURRY — score $blurScore < ${_oodConfig.blurThreshold}');
+        print(' [ImageQualityService] BLURRY — score $blurScore < ${_oodConfig.blurThreshold}');
         return const ImageQualityResult(passed: false, failureReason: _tooBlurry);
       }
 
-      print('✅ [ImageQualityService] PASSED (dark=$mean  blur=$blurScore)');
+      print(' [ImageQualityService] PASSED (dark=$mean  blur=$blurScore)');
       return const ImageQualityResult(passed: true);
     } catch (e) {
       // Any decode / processing error → fail as blurry so we show tips screen.
-      print('⚠️ [ImageQualityService] Exception during check: $e');
+      print(' [ImageQualityService] Exception during check: $e');
       return const ImageQualityResult(passed: false, failureReason: _tooBlurry);
     }
   }

@@ -139,7 +139,7 @@ class _GradCAMVisualizationState extends State<GradCAMVisualization>
           originalImageBytes = await originalFile.readAsBytes();
         }
       } catch (e) {
-        debugPrint('⚠️ Error loading original image: $e');
+        debugPrint(' Error loading original image: $e');
       }
 
       heatmapImageBytes = widget.gradcamImageBytes;
@@ -150,7 +150,7 @@ class _GradCAMVisualizationState extends State<GradCAMVisualization>
             heatmapImageBytes = await heatmapFile.readAsBytes();
           }
         } catch (e) {
-          debugPrint('⚠️ Error loading heatmap image: $e');
+          debugPrint(' Error loading heatmap image: $e');
         }
       }
 

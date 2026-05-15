@@ -458,7 +458,7 @@ class _GradCAMTestingScreenState extends State<GradCAMTestingScreen> {
       );
     }
 
-    print('📊 Test Results Export:');
+    print(' Test Results Export:');
     print(exportData);
   }
 
@@ -500,14 +500,14 @@ class _GradCAMTestingScreenState extends State<GradCAMTestingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                  'Network Interface: ${hasConnection ? "✅ Connected" : "❌ No Connection"}'),
+                  'Network Interface: ${hasConnection ? " Connected" : " No Connection"}'),
               Text(
-                  'Backend Server: ${serverHealth ? "✅ Healthy" : "❌ Unreachable"}'),
+                  'Backend Server: ${serverHealth ? " Healthy" : " Unreachable"}'),
               const SizedBox(height: 8),
               Text(
-                  'Online Mode: ${hasConnection && serverHealth ? "✅ Available" : "❌ Unavailable"}'),
+                  'Online Mode: ${hasConnection && serverHealth ? " Available" : " Unavailable"}'),
               Text(
-                  'Offline Mode: ${_offlineService.isInitialized ? "✅ Available" : "❌ Not Initialized"}'),
+                  'Offline Mode: ${_offlineService.isInitialized ? " Available" : " Not Initialized"}'),
             ],
           ),
           actions: [
@@ -799,7 +799,7 @@ class _GradCAMTestingScreenState extends State<GradCAMTestingScreen> {
               Text(
                   'Heatmap: ${(result.heatmapSize / 1024).toStringAsFixed(1)}KB'),
             if (result.fallbackUsed == true)
-              const Text('⚠️ Fallback used',
+              const Text(' Fallback used',
                   style: TextStyle(color: Colors.orange)),
             if (result.error != null)
               Text('Error: ${result.error}',

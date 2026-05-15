@@ -566,8 +566,8 @@ class _PreparationFocusModeScreenState
                   child: Text(
                     isCompleted
                         ? (index < steps.length - 1
-                            ? 'Step Done ✓'
-                            : 'All Done ✓')
+                            ? 'Step Done '
+                            : 'All Done ')
                         : (index < steps.length - 1
                             ? 'Complete & Continue'
                             : 'Complete Preparation'),

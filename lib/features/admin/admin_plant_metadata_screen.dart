@@ -598,7 +598,7 @@ class _AdminPlantMetadataScreenState extends State<AdminPlantMetadataScreen> {
                     child: Row(children: [
                       Icon(Icons.restart_alt, color: theme.colorScheme.error),
                       const SizedBox(width: 12),
-                      Text('⚠️ Factory Reset Database',
+                      Text(' Factory Reset Database',
                           style: TextStyle(color: theme.colorScheme.error)),
                     ]),
                   ),

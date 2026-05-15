@@ -74,7 +74,7 @@ class PlantResultScreen extends StatefulWidget {
           gradcamImageBytes = file.readAsBytesSync();
         }
       } catch (e) {
-        debugPrint('⚠️ Error loading GradCAM image from path: $e');
+        debugPrint(' Error loading GradCAM image from path: $e');
       }
     }
 
@@ -153,7 +153,7 @@ class _PlantResultScreenState extends State<PlantResultScreen>
         });
       }
     } catch (e) {
-      debugPrint('⚠️ Error loading settings: $e');
+      debugPrint(' Error loading settings: $e');
     }
   }
 
@@ -1303,7 +1303,7 @@ class _PlantResultScreenState extends State<PlantResultScreen>
           await gradcamFile.writeAsBytes(widget.gradcamImageBytes!);
           savedGradCAMPath = gradcamFile.path;
         } catch (e) {
-          debugPrint('⚠️ Error saving GradCAM image: $e');
+          debugPrint(' Error saving GradCAM image: $e');
         }
       }
 
@@ -1348,7 +1348,7 @@ class _PlantResultScreenState extends State<PlantResultScreen>
         });
       }
     } catch (e) {
-      debugPrint('❌ Error saving scan result: $e');
+      debugPrint(' Error saving scan result: $e');
     }
   }
 

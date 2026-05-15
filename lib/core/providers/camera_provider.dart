@@ -127,14 +127,14 @@ class CameraProvider extends ChangeNotifier {
   // --- CHANGED: Initialize TFLite Model ---
   Future<void> initializeClassifier() async {
     try {
-      print("🚀 Loading TFLite Model...");
+      print("Loading TFLite Model...");
       await _tfliteService.loadModel();
 
       _errorMessage = null;
 
       // Initialize AdaptiveGradCAMService asynchronously (optional)
       _adaptiveGradCAM.initialize().catchError((e) {
-        print('⚠️ Warning: Failed to initialize Online Service (that is okay, using Offline TFLite): $e');
+        print('Warning: Failed to initialize Online Service (that is okay, using Offline TFLite): $e');
       });
 
       notifyListeners();
@@ -217,7 +217,7 @@ class CameraProvider extends ChangeNotifier {
 
   // --- CHANGED: Unified AI Processing Logic using TFLite ---
   Future<List<Map<String, dynamic>>> processImageForAI(Uint8List imageData) async {
-    print("🔍 [CameraProvider] processImageForAI() called");
+    print("[CameraProvider] processImageForAI() called");
     print("   Image data: ${imageData.length} bytes");
     _isClassifying = true;
     Future.microtask(notifyListeners);
@@ -225,12 +225,12 @@ class CameraProvider extends ChangeNotifier {
 
     try {
       final imageFile = await _getImageFileForTflite(imageData);
-      print("   📁 Image file: ${imageFile.path}");
+      print("    Image file: ${imageFile.path}");
 
       // CALL YOUR TFLITE SERVICE
-      print("   🚀 Calling TFLite service predict()...");
+      print("    Calling TFLite service predict()...");
       final prediction = await _tfliteService.predict(imageFile);
-      print("   📊 Prediction result: ${prediction != null ? "${prediction.label} (${(prediction.confidence * 100).toStringAsFixed(2)}%)" : "null"}");
+      print("    Prediction result: ${prediction != null ? "${prediction.label} (${(prediction.confidence * 100).toStringAsFixed(2)}%)" : "null"}");
 
       List<Map<String, dynamic>> resultList = [];
       if (prediction != null) {
@@ -272,23 +272,23 @@ class CameraProvider extends ChangeNotifier {
     _performanceMonitor.startTimer(PerformanceOperation.aiInference);
 
     try {
-      print('🌿 [CameraProvider] Processing with AdaptiveGradCAM...');
-      
+      print('[CameraProvider] Processing with AdaptiveGradCAM...');
+
       // Save image to temp file for AdaptiveGradCAMService (needs file path for online)
       final imageFile = await _getImageFileForTflite(imageData);
       final imagePath = imageFile.path;
-      
-      print('   📁 Image saved to: $imagePath');
-      print('   📊 Image bytes: ${imageData.length} bytes');
-      
+
+      print('   Image saved to: $imagePath');
+      print('   Image bytes: ${imageData.length} bytes');
+
       // Get model name from TFLite service (for matching CAM with prediction)
       // Note: We'll get this after the first prediction, but for now try online first
       String? modelName;
       try {
         modelName = _tfliteService.getBestModelName();
-        print('   📌 Best model from TFLite: $modelName');
+        print('   Best model from TFLite: $modelName');
       } catch (e) {
-        print('   ⚠️ Could not get model name: $e');
+        print('   Could not get model name: $e');
         modelName = null;
       }
       
@@ -300,7 +300,7 @@ class CameraProvider extends ChangeNotifier {
       );
 
       if (result == null) {
-        print('   ❌ AdaptiveGradCAM returned null, falling back to TFLite only...');
+        print('   AdaptiveGradCAM returned null, falling back to TFLite only...');
         // Fallback to TFLite only
         final tfliteResult = await _tfliteService.predict(imageFile);
         if (tfliteResult == null) {
@@ -309,7 +309,7 @@ class CameraProvider extends ChangeNotifier {
 
         // Hard-reject for OOD / Not_Plant in fallback
         if (tfliteResult.label == 'Not_Plant') {
-          print('🚫 [CameraProvider] Fallback TFLite Stage 2 OOD failure');
+          print('[CameraProvider] Fallback TFLite Stage 2 OOD failure');
           _isClassifying = false;
           notifyListeners();
           return {
@@ -368,7 +368,7 @@ class CameraProvider extends ChangeNotifier {
       // service couldn't initialize because the bundled model isn't multi-output).
       // Use TflitePlantService for plain top-3 predictions without CAM.
       if (predictions.isEmpty) {
-        print('⚠️ [CameraProvider] AdaptiveGradCAM returned 0 predictions; '
+        print('[CameraProvider] AdaptiveGradCAM returned 0 predictions; '
             'falling back to TFLite top-K (no CAM)...');
         try {
           final topK = await _tfliteService.predictTopK(imageFile, k: 3);
@@ -382,9 +382,9 @@ class CameraProvider extends ChangeNotifier {
               'isDOHApproved': false,
             });
           }
-          print('   ✅ TFLite top-K fallback produced ${predictions.length} predictions');
+          print('   TFLite top-K fallback produced ${predictions.length} predictions');
         } catch (e) {
-          print('   ❌ TFLite top-K fallback failed: $e');
+          print('   TFLite top-K fallback failed: $e');
         }
       }
 
@@ -404,7 +404,7 @@ class CameraProvider extends ChangeNotifier {
       _isClassifying = false;
       notifyListeners();
 
-      print('   ✅ Result: method=${result['method']}, fallback=${result['fallback_used']}, predictions=${predictions.length}');
+      print('   Result: method=${result['method']}, fallback=${result['fallback_used']}, predictions=${predictions.length}');
       
       // Return result from AdaptiveGradCAMService
       return {

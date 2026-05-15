@@ -48,10 +48,10 @@ class OfflineProvider extends ChangeNotifier {
       _isInitialized = true;
       notifyListeners();
       
-      print('✅ Offline Provider initialized');
+      print(' Offline Provider initialized');
     } catch (e) {
       _lastError = 'Failed to initialize offline service: $e';
-      print('❌ Error initializing Offline Provider: $e');
+      print(' Error initializing Offline Provider: $e');
       notifyListeners();
     }
   }
@@ -64,7 +64,7 @@ class OfflineProvider extends ChangeNotifier {
       _pendingSyncResults = _offlineService.pendingSyncResults;
       _offlineStats = await _offlineService.getOfflineStats();
     } catch (e) {
-      print('❌ Error loading initial state: $e');
+      print(' Error loading initial state: $e');
     }
   }
 
@@ -89,7 +89,7 @@ class OfflineProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _lastError = 'Failed to toggle offline mode: $e';
-      print('❌ Error toggling offline mode: $e');
+      print(' Error toggling offline mode: $e');
       notifyListeners();
     }
   }
@@ -102,7 +102,7 @@ class OfflineProvider extends ChangeNotifier {
       return result;
     } catch (e) {
       _lastError = 'Failed to process plant offline: $e';
-      print('❌ Error processing plant offline: $e');
+      print(' Error processing plant offline: $e');
       rethrow;
     }
   }
@@ -115,7 +115,7 @@ class OfflineProvider extends ChangeNotifier {
       await _refreshOfflineStats();
     } catch (e) {
       _lastError = 'Failed to save scan result offline: $e';
-      print('❌ Error saving scan result offline: $e');
+      print(' Error saving scan result offline: $e');
       rethrow;
     }
   }
@@ -127,7 +127,7 @@ class OfflineProvider extends ChangeNotifier {
       return await _offlineService.getOfflineScanHistory();
     } catch (e) {
       _lastError = 'Failed to get offline scan history: $e';
-      print('❌ Error getting offline scan history: $e');
+      print(' Error getting offline scan history: $e');
       return [];
     }
   }
@@ -139,7 +139,7 @@ class OfflineProvider extends ChangeNotifier {
       return await _offlineService.getOfflinePlants();
     } catch (e) {
       _lastError = 'Failed to get offline plants: $e';
-      print('❌ Error getting offline plants: $e');
+      print(' Error getting offline plants: $e');
       return [];
     }
   }
@@ -151,7 +151,7 @@ class OfflineProvider extends ChangeNotifier {
       return await _offlineService.getOfflineDOHPlants();
     } catch (e) {
       _lastError = 'Failed to get offline DOH plants: $e';
-      print('❌ Error getting offline DOH plants: $e');
+      print(' Error getting offline DOH plants: $e');
       return [];
     }
   }
@@ -163,7 +163,7 @@ class OfflineProvider extends ChangeNotifier {
       return await _offlineService.searchPlantsOffline(query);
     } catch (e) {
       _lastError = 'Failed to search plants offline: $e';
-      print('❌ Error searching plants offline: $e');
+      print(' Error searching plants offline: $e');
       return [];
     }
   }
@@ -174,7 +174,7 @@ class OfflineProvider extends ChangeNotifier {
       _offlineStats = await _offlineService.getOfflineStats();
       notifyListeners();
     } catch (e) {
-      print('❌ Error refreshing offline stats: $e');
+      print(' Error refreshing offline stats: $e');
     }
   }
 
@@ -187,7 +187,7 @@ class OfflineProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _lastError = 'Failed to refresh offline data: $e';
-      print('❌ Error refreshing offline data: $e');
+      print(' Error refreshing offline data: $e');
       notifyListeners();
     }
   }
@@ -201,7 +201,7 @@ class OfflineProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _lastError = 'Failed to clear offline data: $e';
-      print('❌ Error clearing offline data: $e');
+      print(' Error clearing offline data: $e');
       rethrow;
     }
   }

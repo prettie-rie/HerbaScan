@@ -17,7 +17,7 @@ class OfflineDataManager {
   /// Initialize offline data directories
   Future<void> initialize() async {
     try {
-      print('🔄 Initializing Offline Data Manager...');
+      print(' Initializing Offline Data Manager...');
 
       // Get application documents directory
       final appDir = await getApplicationDocumentsDirectory();
@@ -26,26 +26,26 @@ class OfflineDataManager {
       _offlineDataDir = Directory('${appDir.path}/offline_data');
       if (!await _offlineDataDir!.exists()) {
         await _offlineDataDir!.create(recursive: true);
-        print('📁 Created offline data directory');
+        print(' Created offline data directory');
       }
 
       // Create images directory
       _imagesDir = Directory('${_offlineDataDir!.path}/images');
       if (!await _imagesDir!.exists()) {
         await _imagesDir!.create(recursive: true);
-        print('📁 Created images directory');
+        print(' Created images directory');
       }
 
       // Create models directory
       _modelsDir = Directory('${_offlineDataDir!.path}/models');
       if (!await _modelsDir!.exists()) {
         await _modelsDir!.create(recursive: true);
-        print('📁 Created models directory');
+        print(' Created models directory');
       }
 
-      print('✅ Offline Data Manager initialized');
+      print(' Offline Data Manager initialized');
     } catch (e) {
-      print('❌ Error initializing Offline Data Manager: $e');
+      print(' Error initializing Offline Data Manager: $e');
       rethrow;
     }
   }
@@ -60,10 +60,10 @@ class OfflineDataManager {
       final file = File('${_imagesDir!.path}/$filename');
       await file.writeAsBytes(imageData);
 
-      print('💾 Image saved offline: $filename');
+      print(' Image saved offline: $filename');
       return file.path;
     } catch (e) {
-      print('❌ Error saving image offline: $e');
+      print(' Error saving image offline: $e');
       rethrow;
     }
   }
@@ -81,7 +81,7 @@ class OfflineDataManager {
       }
       return null;
     } catch (e) {
-      print('❌ Error loading image offline: $e');
+      print(' Error loading image offline: $e');
       return null;
     }
   }
@@ -96,12 +96,12 @@ class OfflineDataManager {
       final file = File('${_imagesDir!.path}/$filename');
       if (await file.exists()) {
         await file.delete();
-        print('🗑️ Image deleted offline: $filename');
+        print(' Image deleted offline: $filename');
         return true;
       }
       return false;
     } catch (e) {
-      print('❌ Error deleting image offline: $e');
+      print(' Error deleting image offline: $e');
       return false;
     }
   }
@@ -158,7 +158,7 @@ class OfflineDataManager {
         'availableSpaceMB': (availableSpace / (1024 * 1024)).toStringAsFixed(2),
       };
     } catch (e) {
-      print('❌ Error getting storage stats: $e');
+      print(' Error getting storage stats: $e');
       return {
         'totalSize': 0,
         'imageCount': 0,
@@ -200,9 +200,9 @@ class OfflineDataManager {
         }
       }
 
-      print('🧹 Cleaned up $deletedCount old files');
+      print(' Cleaned up $deletedCount old files');
     } catch (e) {
-      print('❌ Error cleaning up old data: $e');
+      print(' Error cleaning up old data: $e');
     }
   }
 
@@ -221,7 +221,7 @@ class OfflineDataManager {
         'version': 'v0.9.7',
       };
     } catch (e) {
-      print('❌ Error exporting offline data: $e');
+      print(' Error exporting offline data: $e');
       rethrow;
     }
   }
@@ -231,14 +231,14 @@ class OfflineDataManager {
     try {
       // This would implement data import logic
       // For now, just log the import
-      print('📥 Importing offline data...');
+      print(' Importing offline data...');
       print('Export date: ${data['exportDate']}');
       print('Plants: ${data['plants']?.length ?? 0}');
       print('Scans: ${data['scanHistory']?.length ?? 0}');
 
       // TODO: Implement actual import logic
     } catch (e) {
-      print('❌ Error importing offline data: $e');
+      print(' Error importing offline data: $e');
       rethrow;
     }
   }
@@ -250,13 +250,13 @@ class OfflineDataManager {
 
       if (await _offlineDataDir!.exists()) {
         await _offlineDataDir!.delete(recursive: true);
-        print('🗑️ All offline data cleared');
+        print(' All offline data cleared');
       }
 
       // Recreate directories
       await initialize();
     } catch (e) {
-      print('❌ Error clearing offline data: $e');
+      print(' Error clearing offline data: $e');
       rethrow;
     }
   }
@@ -269,7 +269,7 @@ class OfflineDataManager {
       final plants = await _databaseService.getAllPlants();
       return plants.isNotEmpty;
     } catch (e) {
-      print('❌ Error checking offline data availability: $e');
+      print(' Error checking offline data availability: $e');
       return false;
     }
   }
@@ -291,7 +291,7 @@ class OfflineDataManager {
         'lastUpdated': DateTime.now().toIso8601String(),
       };
     } catch (e) {
-      print('❌ Error getting data health status: $e');
+      print(' Error getting data health status: $e');
       return {
         'isHealthy': false,
         'hasData': false,
@@ -307,7 +307,7 @@ class OfflineDataManager {
   /// Optimize offline storage
   Future<void> optimizeStorage() async {
     try {
-      print('🔧 Optimizing offline storage...');
+      print(' Optimizing offline storage...');
 
       // Clean up old data
       await cleanupOldData();
@@ -315,9 +315,9 @@ class OfflineDataManager {
       // Rebuild database indexes (if needed)
       await _databaseService.database;
 
-      print('✅ Storage optimization completed');
+      print(' Storage optimization completed');
     } catch (e) {
-      print('❌ Error optimizing storage: $e');
+      print(' Error optimizing storage: $e');
     }
   }
 

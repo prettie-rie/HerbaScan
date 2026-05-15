@@ -234,7 +234,7 @@ class _ScanScreenState extends State<ScanScreen>
         }
       }
     } catch (e) {
-      debugPrint('❌ [ScanScreen] Capture Error: $e');
+      debugPrint(' [ScanScreen] Capture Error: $e');
       if (mounted) {
         final cameraProvider =
             Provider.of<CameraProvider>(context, listen: false);
@@ -332,7 +332,7 @@ class _ScanScreenState extends State<ScanScreen>
         }
       }
     } catch (e) {
-      debugPrint('❌ [ScanScreen] Gallery Error: $e');
+      debugPrint(' [ScanScreen] Gallery Error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e')),

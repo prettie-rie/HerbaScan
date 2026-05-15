@@ -81,13 +81,13 @@ class LanguageProvider extends ChangeNotifier {
         'code': 'en',
         'name': 'English',
         'nativeName': 'English',
-        'flag': '🇺🇸',
+        'flag': '',
       },
       {
         'code': 'fil',
         'name': 'Filipino',
         'nativeName': 'Filipino',
-        'flag': '🇵🇭',
+        'flag': '',
       },
     ];
   }

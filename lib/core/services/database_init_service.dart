@@ -185,20 +185,20 @@ class DatabaseInitService {
   /// Useful for adding new plants after app updates
   Future<void> updateDatabaseWithMissingPlants() async {
     try {
-      print('🔍 Checking for missing plants and updating image paths...');
+      print(' Checking for missing plants and updating image paths...');
       // Get all expected plants from PlantDataService
       final expectedPlants = PlantDataService.getAllMedicinalPlantsData();
       final expectedPlantIds = expectedPlants.map((p) => p.id).toSet();
-      print('📋 Expected plants: ${expectedPlants.length} (IDs: ${expectedPlantIds.join(", ")})');
+      print(' Expected plants: ${expectedPlants.length} (IDs: ${expectedPlantIds.join(", ")})');
 
       // Check existing plants in database
       final existingPlants = await _databaseService.getAllPlants();
       final existingPlantIds = existingPlants.map((p) => p.id).toSet();
-      print('💾 Existing plants in database: ${existingPlants.length} (IDs: ${existingPlantIds.join(", ")})');
+      print(' Existing plants in database: ${existingPlants.length} (IDs: ${existingPlantIds.join(", ")})');
 
       // Find missing plants
       final missingPlantIds = expectedPlantIds.difference(existingPlantIds);
-      print('❌ Missing plants: ${missingPlantIds.length} (IDs: ${missingPlantIds.join(", ")})');
+      print(' Missing plants: ${missingPlantIds.length} (IDs: ${missingPlantIds.join(", ")})');
       
       // Update image paths and english names for existing plants
       final db = await _databaseService.database;
@@ -228,29 +228,29 @@ class DatabaseInitService {
               whereArgs: [expectedPlant.id],
             );
             updatedCount++;
-            print('🔄 Updated ${expectedPlant.commonName}: ${updateData.keys.join(", ")}');
+            print(' Updated ${expectedPlant.commonName}: ${updateData.keys.join(", ")}');
           }
         }
       }
       if (updatedCount > 0) {
-        print('✅ Updated $updatedCount plants');
+        print(' Updated $updatedCount plants');
       }
       
       if (missingPlantIds.isNotEmpty) {
         print(
-            '➕ Found ${missingPlantIds.length} missing plants. Adding them to database...');
+            ' Found ${missingPlantIds.length} missing plants. Adding them to database...');
         for (var plant in expectedPlants) {
           if (missingPlantIds.contains(plant.id)) {
             await _insertPlantWithRelations(plant);
-            print('✅ Added missing plant: ${plant.commonName} (${plant.scientificName})');
+            print(' Added missing plant: ${plant.commonName} (${plant.scientificName})');
           }
         }
-        print('✅ Successfully added ${missingPlantIds.length} missing plants');
+        print(' Successfully added ${missingPlantIds.length} missing plants');
       } else {
-        print('✅ All expected plants are already in the database');
+        print(' All expected plants are already in the database');
       }
     } catch (e) {
-      print('❌ Error updating database with missing plants: $e');
+      print(' Error updating database with missing plants: $e');
       rethrow;
     }
   }

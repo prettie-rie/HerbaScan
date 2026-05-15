@@ -37,7 +37,7 @@ class ErrorLogger {
 
     await _saveError(errorLog);
 
-    print('🔴 Error Logged: [$errorType] $message');
+    print(' Error Logged: [$errorType] $message');
   }
 
   /// Save error to persistent storage

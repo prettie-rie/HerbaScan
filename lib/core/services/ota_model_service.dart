@@ -54,7 +54,7 @@ class OtaModelService {
     // OTA temporarily disabled: Supabase live-models holds a model whose
     // class index order does not match the bundled class_indices.json,
     // so we force the app to use bundled assets.
-    debugPrint('🚫 [OtaModelService] OTA disabled — using bundled assets.');
+    debugPrint(' [OtaModelService] OTA disabled — using bundled assets.');
     return;
   }
 
@@ -67,7 +67,7 @@ class OtaModelService {
         await _fetchFromVersionsTable() ?? await _fetchFromLiveModelsBucket();
 
     if (remote == null) {
-      debugPrint('ℹ️ [OtaModelService] No remote model source found.');
+      debugPrint('ℹ [OtaModelService] No remote model source found.');
       return;
     }
 
@@ -78,11 +78,11 @@ class OtaModelService {
 
     if (!_isNewer(remoteVersion, localVersion)) {
       debugPrint(
-          '✅ [OtaModelService] Model is up to date (version: $localVersion).');
+          ' [OtaModelService] Model is up to date (version: $localVersion).');
       return;
     }
 
-    debugPrint('⬇️  [OtaModelService] Newer model found: $remoteVersion '
+    debugPrint('⬇  [OtaModelService] Newer model found: $remoteVersion '
         '(local: ${localVersion.isEmpty ? "none" : localVersion})');
 
     final bool success = await _downloadAll(
@@ -95,7 +95,7 @@ class OtaModelService {
       await prefs.setString(_prefKey, remoteVersion);
       _otaAvailable = true;
       debugPrint(
-          '✅ [OtaModelService] Model updated to version $remoteVersion.');
+          ' [OtaModelService] Model updated to version $remoteVersion.');
     }
   }
 
@@ -112,12 +112,12 @@ class OtaModelService {
           .maybeSingle();
 
       if (response == null) return null;
-      debugPrint('📋 [OtaModelService] Found model_versions row '
+      debugPrint(' [OtaModelService] Found model_versions row '
           '(version: ${response['version']})');
       return response;
     } catch (e) {
       debugPrint(
-          '⚠️ [OtaModelService] model_versions table not available: $e');
+          ' [OtaModelService] model_versions table not available: $e');
       return null;
     }
   }
@@ -141,7 +141,7 @@ class OtaModelService {
 
       if (tfliteEntry == null) {
         debugPrint(
-            '⚠️ [OtaModelService] $_tfliteFileName not found in '
+            ' [OtaModelService] $_tfliteFileName not found in '
             '$_liveModelsBucket bucket.');
         return null;
       }
@@ -156,7 +156,7 @@ class OtaModelService {
       final camWeightsUrl =
           storage.from(_liveModelsBucket).getPublicUrl(_camWeightsFileName);
 
-      debugPrint('📦 [OtaModelService] Using live-models bucket '
+      debugPrint(' [OtaModelService] Using live-models bucket '
           '(version: $version)');
       return {
         'version': version,
@@ -166,7 +166,7 @@ class OtaModelService {
       };
     } catch (e) {
       debugPrint(
-          '⚠️ [OtaModelService] Could not access live-models bucket: $e');
+          ' [OtaModelService] Could not access live-models bucket: $e');
       return null;
     }
   }
@@ -221,7 +221,7 @@ class OtaModelService {
 
       return true;
     } catch (e) {
-      debugPrint('⚠️ [OtaModelService] Download failed: $e');
+      debugPrint(' [OtaModelService] Download failed: $e');
       await _cleanupTempFiles();
       return false;
     }
@@ -231,7 +231,7 @@ class OtaModelService {
     final dest = File('${_modelsDir!.path}/$fileName');
     final tmp = File('${_modelsDir!.path}/$fileName.tmp');
 
-    debugPrint('⬇️  [OtaModelService] Downloading $fileName …');
+    debugPrint('⬇  [OtaModelService] Downloading $fileName …');
     final response = await http.get(Uri.parse(url));
     if (response.statusCode != 200) {
       throw Exception(
@@ -243,7 +243,7 @@ class OtaModelService {
     if (await dest.exists()) await dest.delete();
     await tmp.rename(dest.path);
 
-    debugPrint('✅ [OtaModelService] $fileName saved '
+    debugPrint(' [OtaModelService] $fileName saved '
         '(${(response.bodyBytes.length / 1024).toStringAsFixed(1)} KB)');
   }
 

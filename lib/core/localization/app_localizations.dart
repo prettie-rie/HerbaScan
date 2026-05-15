@@ -513,7 +513,7 @@ class AppLocalizations {
       'browseByCondition': 'Browse by Condition',
       'selectCondition': 'Select a medical condition',
       'commonConditions': 'Common Conditions',
-      'dohApprovedLabel': '✓ DOH Approved',
+      'dohApprovedLabel': ' DOH Approved',
       'philippineDepartmentOfHealth': 'Philippine Department of Health',
       'clinicallyValidated': 'clinically validated herbal medicines',
       'medicalDisclaimer':
@@ -707,7 +707,7 @@ class AppLocalizations {
       'browseByCondition': 'Tingnan Ayon sa Kondisyon',
       'selectCondition': 'Pumili ng kondisyong medikal',
       'commonConditions': 'Mga Karaniwang Kondisyon',
-      'dohApprovedLabel': '✓ Pinahintulutan ng DOH',
+      'dohApprovedLabel': ' Pinahintulutan ng DOH',
       'philippineDepartmentOfHealth': 'Kagawaran ng Kalusugan ng Pilipinas',
       'clinicallyValidated': 'mga halamang gamot na klinikal na napatunayan',
       'medicalDisclaimer':

@@ -244,10 +244,10 @@ class DatabaseService {
       try {
         await db.execute(
             'ALTER TABLE $_plantsTable ADD COLUMN english_name TEXT NOT NULL DEFAULT ""');
-        print('✅ Added english_name column to plants table');
+        print(' Added english_name column to plants table');
       } catch (e) {
         // Column might already exist
-        print('ℹ️ english_name column may already exist: $e');
+        print('ℹ english_name column may already exist: $e');
       }
     }
     if (oldVersion < 3) {
@@ -257,17 +257,17 @@ class DatabaseService {
         await db.execute(
             'ALTER TABLE $_preparationMethodsTable ADD COLUMN schedule_json TEXT');
         print(
-            '✅ Added step_details_json and schedule_json to preparation_methods');
+            ' Added step_details_json and schedule_json to preparation_methods');
       } catch (e) {
-        print('ℹ️ preparation_methods columns may already exist: $e');
+        print('ℹ preparation_methods columns may already exist: $e');
       }
     }
     if (oldVersion < 4) {
       try {
         await db.execute('ALTER TABLE $_plantsTable ADD COLUMN image_url TEXT');
-        print('✅ Added image_url to plants table');
+        print(' Added image_url to plants table');
       } catch (e) {
-        print('ℹ️ image_url column may already exist: $e');
+        print('ℹ image_url column may already exist: $e');
       }
     }
     if (oldVersion < 5) {
@@ -295,9 +295,9 @@ class DatabaseService {
         ''');
         await db.execute(
             'CREATE INDEX IF NOT EXISTS idx_plant_habitats_plant ON $_plantHabitatsTable (plant_id)');
-        print('✅ Added safety_profiles and plant_habitats tables');
+        print(' Added safety_profiles and plant_habitats tables');
       } catch (e) {
-        print('ℹ️ safety_profiles/plant_habitats may already exist: $e');
+        print('ℹ safety_profiles/plant_habitats may already exist: $e');
       }
     }
     if (oldVersion < 6) {
@@ -322,9 +322,9 @@ class DatabaseService {
         ''');
         await db.execute(
             'CREATE INDEX IF NOT EXISTS idx_condition_plants_plant ON $_conditionPlantsTable (plant_id)');
-        print('✅ Added catalog_conditions and catalog_condition_plants tables');
+        print(' Added catalog_conditions and catalog_condition_plants tables');
       } catch (e) {
-        print('ℹ️ catalog_conditions/condition_plants may already exist: $e');
+        print('ℹ catalog_conditions/condition_plants may already exist: $e');
       }
     }
     if (oldVersion < 7) {
@@ -345,18 +345,18 @@ class DatabaseService {
         ''');
         await db.execute(
             'CREATE INDEX IF NOT EXISTS idx_catalog_plant_anatomy_plant_id ON $_anatomyTable (plant_id)');
-        print('✅ Added catalog_plant_anatomy table');
+        print(' Added catalog_plant_anatomy table');
       } catch (e) {
-        print('ℹ️ catalog_plant_anatomy may already exist: $e');
+        print('ℹ catalog_plant_anatomy may already exist: $e');
       }
     }
     if (oldVersion < 8) {
       try {
         await db.execute(
             'ALTER TABLE $_safetyProfilesTable ADD COLUMN needs_strict_contraindications INTEGER NOT NULL DEFAULT 0');
-        print('✅ Added needs_strict_contraindications to safety_profiles');
+        print(' Added needs_strict_contraindications to safety_profiles');
       } catch (e) {
-        print('ℹ️ needs_strict_contraindications may already exist: $e');
+        print('ℹ needs_strict_contraindications may already exist: $e');
       }
     }
   }
@@ -884,7 +884,7 @@ class DatabaseService {
         }
       }
     } catch (e) {
-      print('⚠️ Error parsing predictions: $e');
+      print(' Error parsing predictions: $e');
       predictions = [];
     }
 
@@ -898,7 +898,7 @@ class DatabaseService {
         }
       }
     } catch (e) {
-      print('⚠️ Error parsing metadata: $e');
+      print(' Error parsing metadata: $e');
       metadata = {};
     }
 
