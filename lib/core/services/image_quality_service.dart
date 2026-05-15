@@ -1,4 +1,5 @@
 // lib/core/services/image_quality_service.dart
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:image/image.dart' as img;
 import 'package:herbascan/core/services/ood_config_service.dart';
@@ -32,6 +33,8 @@ class ImageQualityService {
   // Canonical rejection strings — must match Python backend exactly.
   static const String _tooBlurry = 'Validation Failed: Image is too blurry.';
   static const String _tooDark = 'Validation Failed: Image is too dark.';
+  static const String _lacksStructure =
+      'Validation Failed: Image lacks sufficient structure.';
 
   /// Check image quality.  Returns [ImageQualityResult.passed] == true when
   /// both the darkness and blur gates pass.
@@ -84,7 +87,7 @@ class ImageQualityService {
         return const ImageQualityResult(passed: false, failureReason: _tooBlurry);
       }
 
-      print(' [ImageQualityService] PASSED (dark=$mean  blur=$blurScore)');
+      print('✅ [ImageQualityService] PASSED (dark=$mean  blur=$blurScore)');
       return const ImageQualityResult(passed: true);
     } catch (e) {
       // Any decode / processing error → fail as blurry so we show tips screen.
