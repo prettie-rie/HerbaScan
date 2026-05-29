@@ -690,7 +690,7 @@ class _AdminNewPlantWizardState extends State<AdminNewPlantWizard> {
 
           // ── Safety ─────────────────────────────────────────────────
           _SectionExpansion(
-            icon: Icons.health_and_safety_rounded,
+            icon: Icons.health_and_safety_rounded,where
             color: AppTheme.warningAmber,
             title: 'Safety',
             children: [
